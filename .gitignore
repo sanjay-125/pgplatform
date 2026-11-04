@@ -3,9 +3,10 @@ android/.gradle/
 android/build/
 android/app/build/
 dist/
-data/*.db
-data/*.db-wal
-data/*.db-shm
+data/
+*.db
+*.db-wal
+*.db-shm
 .DS_Store
 *.jks
 *.keystore
