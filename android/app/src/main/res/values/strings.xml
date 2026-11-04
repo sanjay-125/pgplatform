@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">StayDesk</string>
+    <string name="title_activity_main">StayDesk</string>
+    <string name="package_name">com.staydesk.pgmanager</string>
+    <string name="custom_url_scheme">com.staydesk.pgmanager</string>
+</resources>

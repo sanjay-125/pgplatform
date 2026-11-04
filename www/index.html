@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17233b">
+<title>StayDesk — PG Manager</title>
+<style>
+:root{--bg:#f5f7fb;--panel:#fff;--text:#172033;--muted:#738096;--line:#e5eaf2;--nav:#17233b;--accent:#4776e6;--green:#16856b;--orange:#b97818;--red:#c74747;--shadow:0 8px 28px rgba(24,39,75,.06)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--text)}button,input,select,textarea{font:inherit}button,a{cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #9cb5ff;outline-offset:2px}
+.app{min-height:100vh;display:grid;grid-template-columns:235px 1fr}.sidebar{background:var(--nav);color:#eaf0ff;padding:22px 14px;display:flex;flex-direction:column;gap:24px}.brand{display:flex;align-items:center;gap:11px;padding:0 9px}.brand-icon{width:38px;height:38px;border-radius:12px;background:var(--accent);display:grid;place-items:center;font-weight:900;color:white}.brand strong{font-size:18px}.brand small{display:block;color:#aab8d2;font-size:10px;margin-top:2px;letter-spacing:1px}.nav-label{font-size:10px;text-transform:uppercase;letter-spacing:1.4px;color:#8493af;padding:0 12px;margin-bottom:7px}.nav{display:grid;gap:4px}.nav button{border:0;color:#b9c5dc;background:transparent;text-align:left;padding:11px 12px;border-radius:10px;display:flex;align-items:center;gap:11px;font-size:12px}.nav button.active,.nav button:hover{background:#293958;color:#fff}.ico{width:20px;text-align:center;font-size:15px}.side-bottom{margin-top:auto;border-top:1px solid #33415b;padding:15px 10px 0;color:#9eacc4;font-size:10px;line-height:1.7}
+main{min-width:0}.topbar{height:70px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px;gap:15px}.crumb{color:var(--muted);font-size:12px}.top-right{display:flex;align-items:center;gap:10px}.avatar{width:35px;height:35px;border-radius:50%;display:grid;place-items:center;background:#e8efff;color:#3458b9;font-size:12px;font-weight:800}.owner{font-size:12px;font-weight:700}.owner small{display:block;color:var(--muted);font-weight:400;margin-top:2px}.content{padding:27px 30px 42px;max-width:1500px;margin:auto}.heading{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:21px}.heading h1{font-size:25px;letter-spacing:-.7px;margin:0 0 6px}.heading p{font-size:12px;color:var(--muted);margin:0;line-height:1.5}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#fff;color:#34415b;border-radius:9px;padding:9px 13px;font-size:11px;font-weight:750;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.btn.danger{color:var(--red)}.btn.small{padding:6px 9px;font-size:10px}.btn:hover{filter:brightness(.97)}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:18px}.stat,.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}.stat{padding:17px 18px}.stat-top{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:11px;gap:6px}.stat-icon{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;background:#eef3ff;color:#4b6ed1;font-size:15px}.stat-value{font-size:25px;font-weight:800;letter-spacing:-.8px;margin:12px 0 4px}.stat-foot{font-size:10px;color:var(--muted)}.grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:16px;margin-bottom:16px}.card{padding:18px;min-width:0}.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}.card-head h2{font-size:14px;margin:0}.card-head p{font-size:10px;color:var(--muted);margin:5px 0 0}.link-btn{border:0;background:transparent;color:var(--accent);font-size:10px;font-weight:750;padding:5px}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;white-space:nowrap}th{text-align:left;padding:10px 11px;font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:#8994a6;border-bottom:1px solid var(--line);font-weight:750}td{padding:12px 11px;border-bottom:1px solid #edf0f5;font-size:11px}tr:last-child td{border-bottom:0}.person{display:flex;align-items:center;gap:9px}.mini-avatar{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:#edf2ff;color:#4767bd;font-size:10px;font-weight:800}.sub{display:block;font-size:9px;color:var(--muted);margin-top:3px}.pill{display:inline-flex;align-items:center;padding:4px 7px;border-radius:20px;font-size:9px;font-weight:800}.pill.paid,.pill.occupied,.pill.active{background:#e6f7f1;color:#13765e}.pill.pending,.pill.vacant{background:#fff3df;color:#a46512}.pill.overdue,.pill.checkedout{background:#ffebeb;color:#b13e3e}.toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.search{flex:1;min-width:160px}.search input{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px 11px;background:#fff;font-size:11px}.filter{border:1px solid var(--line);border-radius:9px;padding:10px;background:#fff;font-size:11px;color:#46536a}.room-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.room-card{border:1px solid var(--line);border-radius:12px;padding:15px;background:white}.room-top{display:flex;justify-content:space-between;align-items:center;gap:8px}.room-top strong{font-size:14px}.beds{display:flex;gap:6px;margin:15px 0}.bed{flex:1;min-width:0;border-radius:8px;padding:9px 3px;text-align:center;background:#e7f6f0;color:#13765e;font-size:9px;font-weight:800}.bed.empty{background:#fff3df;color:#a46512}.room-foot{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:10px;padding-top:10px;border-top:1px solid var(--line)}.notice{padding:12px 14px;border-radius:10px;background:#eff4ff;color:#4563a8;font-size:11px;line-height:1.6;margin-bottom:15px}.notice.warn{background:#fff4e3;color:#875a14}.hidden{display:none!important}.app{display:none}.app:not(.hidden){display:grid}.modal-backdrop{position:fixed;inset:0;background:#101a2c80;display:grid;place-items:center;padding:16px;z-index:10}.modal{background:white;width:min(650px,100%);max-height:92vh;overflow:auto;border-radius:16px;padding:22px;box-shadow:0 20px 80px #0003}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.modal-head h2{font-size:17px;margin:0}.close{border:0;background:#f1f3f8;border-radius:8px;width:31px;height:31px;font-size:18px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:5px}.field.full{grid-column:1/-1}.field label{font-size:10px;font-weight:750;color:#58657a}.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:#fff;font-size:11px}.field small{color:var(--muted);font-size:9px;line-height:1.4}.checkline{display:flex;align-items:flex-start;gap:8px;font-size:10px;line-height:1.5;color:#536078}.checkline input{width:auto;margin-top:2px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.empty{text-align:center;padding:30px 18px;color:var(--muted);font-size:11px}.toast{position:fixed;right:18px;bottom:18px;background:#17233b;color:#fff;padding:12px 15px;border-radius:10px;font-size:11px;box-shadow:var(--shadow);z-index:20;max-width:calc(100vw - 36px)}.footer-note{font-size:9px;color:#8b96a8;margin-top:18px;line-height:1.5}.report-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.report-box{border:1px solid var(--line);border-radius:11px;padding:15px}.report-box span{font-size:10px;color:var(--muted)}.report-box strong{display:block;font-size:21px;margin-top:8px}.roommate-card{max-width:720px}.roommate-person{display:flex;align-items:center;gap:13px;padding:14px 0;border-bottom:1px solid var(--line)}.roommate-person:last-child{border-bottom:0}.roommate-person .mini-avatar{width:42px;height:42px;font-size:13px}.roommate-person strong{font-size:12px}.roommate-person p{margin:4px 0 0;color:var(--muted);font-size:10px}.period-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.period-bar input{border:1px solid var(--line);border-radius:8px;padding:9px;font-size:11px;background:#fff}
+@media(max-width:1050px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2{grid-template-columns:1fr}.room-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.app{grid-template-columns:1fr}.sidebar{padding:10px;gap:10px}.brand{padding:0 5px}.nav-label,.side-bottom{display:none}.nav{display:flex;overflow:auto;padding-bottom:2px}.nav button{white-space:nowrap;padding:9px;font-size:10px}.nav .ico{width:auto}.topbar{height:55px;padding:0 14px}.content{padding:19px 12px 30px}.heading{flex-direction:column}.heading h1{font-size:22px}.stats{gap:8px}.stat{padding:12px}.stat-value{font-size:20px}.stat-top{font-size:9px}.room-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.top-right .owner{display:none}.report-grid{grid-template-columns:1fr}.card{padding:13px}.table-wrap table{min-width:650px}.heading .actions{width:100%}.heading .actions .btn{flex:1}}
+@media print{.sidebar,.topbar,.heading .actions,.btn,.toolbar,.footer-note{display:none!important}.app{display:block}.content{padding:0}.page.hidden{display:none!important}body{background:#fff}.card,.stat{box-shadow:none}}
+
+.login-screen{min-height:100vh;background:linear-gradient(135deg,#edf2ff,#f7f8fc 55%,#e8f5f1);display:grid;place-items:center;padding:22px}
+.login-card{background:#fff;border:1px solid #e5eaf2;border-radius:20px;box-shadow:0 18px 60px rgba(24,39,75,.12);padding:30px;width:min(440px,100%)}
+.login-brand{display:flex;align-items:center;gap:11px}.login-brand strong{font-size:19px}.login-brand small{display:block;color:#738096;font-size:9px;letter-spacing:1px;margin-top:3px}
+.login-intro{margin:26px 0 20px}.login-intro h1{font-size:25px;margin:0 0 7px;letter-spacing:-.6px}.login-intro p{font-size:12px;color:#738096;line-height:1.5;margin:0}
+.login-field{display:grid;gap:6px;margin:13px 0}.login-field label{font-size:11px;font-weight:750;color:#46536a}.login-field input,.login-field select{width:100%;padding:12px;border:1px solid #e0e6f0;border-radius:9px;background:#fff;font-size:12px;color:#172033}.login-field small{font-size:10px;color:#738096;line-height:1.4}
+.login-submit{width:100%;padding:12px;margin-top:6px}.login-note{font-size:10px;line-height:1.6;color:#7a869a;margin:17px 0 0}.login-note strong{color:#a46512}
+.tenant-portal,.super-portal{min-height:100vh;background:var(--bg)}.tenant-top{height:70px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 max(18px,calc((100vw - 1100px)/2));gap:15px}.tenant-content{padding:28px 22px 45px;max-width:1120px;margin:auto}
+@media(max-width:600px){.login-card{padding:22px}.tenant-top{height:60px;padding:0 14px}.tenant-content{padding:20px 12px}}
+
+</style>
+</head>
+<body>
+
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-brand"><div class="brand-icon">S</div><div><strong>StayDesk</strong><small>PG MANAGEMENT PLATFORM</small></div></div>
+    <div class="login-intro"><h1>Welcome back</h1><p>Sign in to manage your PG or view your stay details.</p></div>
+    <div class="login-field"><label for="loginRole">Login as</label>
+      <select id="loginRole">
+        <option value="tenant">User · Tenant</option>
+        <option value="admin">Admin · PG Owner / Manager</option>
+        <option value="superadmin">Super Admin · Platform</option>
+      </select>
+    </div>
+    <div class="login-field" id="tenantPickerWrap"><label for="loginTenant">Demo tenant account</label><select id="loginTenant"></select></div>
+    <div class="login-field" id="propertyPickerWrap"><label for="loginProperty">Property access</label><select id="loginProperty"><option value="all">All assigned PGs</option><option value="pg1">PG 1 · Main Street</option><option value="pg2">PG 2 · Katpadi</option></select><small>One admin account can manage multiple PG properties.</small></div>
+    <div class="login-field"><label for="loginEmail">Email / username</label><input id="loginEmail" autocomplete="username" placeholder="demo@staydesk.in" value="demo@staydesk.in"></div>
+    <div class="login-field"><label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Demo only — no real password required" value="demo123"></div>
+    <button class="btn primary login-submit" onclick="demoLogin()">Continue to StayDesk →</button>
+    <p class="login-note"><strong>Prototype login:</strong> role selection is for demonstrating navigation and permissions only. It does not authenticate a real account. Do not use real tenant data until secure server-side authentication and authorization are implemented.</p>
+  </div>
+</div>
+<div id="tenantPortal" class="tenant-portal hidden">
+  <header class="tenant-top"><div class="brand"><div class="brand-icon">S</div><div><strong>StayDesk</strong><small>TENANT PORTAL</small></div></div><button class="btn" onclick="demoLogout()">Sign out</button></header>
+  <main class="tenant-content"><div class="heading"><div><h1 id="tenantWelcome">My Stay</h1><p>Your room, rent status and permitted roommate details.</p></div></div>
+    <div class="stats" id="tenantPortalStats"></div>
+    <div class="grid2"><div class="card"><div class="card-head"><div><h2>My stay details</h2><p>Personal account information</p></div></div><div id="tenantStayDetails"></div></div>
+    <div class="card"><div class="card-head"><div><h2>My roommates</h2><p>Only contact details permitted to be shared</p></div></div><div id="tenantRoommates"></div></div></div>
+    <div class="card"><div class="card-head"><div><h2>My payment history</h2><p>Your recorded rent payments only</p></div></div><div class="table-wrap"><table><thead><tr><th>Rent month</th><th>Payment date</th><th>Amount</th><th>Method</th><th>Receipt</th></tr></thead><tbody id="tenantPayments"></tbody></table></div></div>
+    <p class="footer-note">This is a demo tenant portal. Production access must be authenticated and enforced by the server.</p>
+  </main>
+</div>
+<div id="superAdminPortal" class="super-portal hidden">
+  <header class="tenant-top"><div class="brand"><div class="brand-icon">S</div><div><strong>StayDesk</strong><small>PLATFORM ADMINISTRATION</small></div></div><button class="btn" onclick="demoLogout()">Sign out</button></header>
+  <main class="tenant-content"><div class="heading"><div><h1>Super Admin</h1><p>Platform-level overview and access management.</p></div><div class="actions"><button class="btn primary" onclick="toast('Property creation needs backend support in the production build.')">＋ Create property</button></div></div>
+    <div class="stats" id="superStats"></div>
+    <div class="card"><div class="card-head"><div><h2>Properties</h2><p>Illustrative multi-property setup</p></div></div><div class="table-wrap"><table><thead><tr><th>Property</th><th>Owner / Admin</th><th>Tenants</th><th>Status</th><th>Access</th></tr></thead><tbody id="superPropertyRows"></tbody></table></div></div>
+    <div class="notice warn" style="margin-top:15px">Super Admin should manage platform accounts and property access. Access to personal tenant data should be limited to legitimate support cases and logged. These controls are only a front-end demonstration until a secure backend is added.</div>
+  </main>
+</div>
+
+<div class="app" id="ownerApp">
+<aside class="sidebar">
+ <div class="brand"><div class="brand-icon">S</div><div><strong>StayDesk</strong><small>PG MANAGEMENT</small></div></div>
+ <div><div class="nav-label">Workspace</div><nav class="nav" id="nav">
+  <button class="active" data-page="dashboard"><span class="ico">▦</span>Dashboard</button>
+  <button data-page="rooms"><span class="ico">▤</span>Rooms & beds</button>
+  <button data-page="tenants"><span class="ico">♙</span>Tenants</button>
+  <button data-page="rent"><span class="ico">₹</span>Rent & payments</button>
+  <button data-page="reminders"><span class="ico">◷</span>Reminders & receipts</button>
+  <button data-page="reports"><span class="ico">▥</span>Reports & expenses</button>
+  <button data-page="roommates"><span class="ico">♧</span>Roommate view</button>
+ </nav></div>
+ <div class="side-bottom">StayDesk local prototype<br>Records stay on this browser/device.<br>Not yet secure for real tenant data.</div>
+</aside>
+<main>
+ <header class="topbar"><div class="crumb" id="crumb">Dashboard</div><div class="top-right"><div class="avatar">SD</div><div class="owner">PG Workspace<small>Local demo mode</small></div><button class="btn small" onclick="demoLogout()" aria-label="Sign out of admin account">↪ Sign out</button></div></header>
+ <div class="content">
+  <section id="dashboardPage" class="page">
+   <div class="heading"><div><h1>Good evening 👋</h1><p>Here's your PG's occupancy, rent and cash flow at a glance.</p></div><div class="actions"><button class="btn" onclick="exportData()">Export backup</button><button class="btn primary" onclick="openModal('tenant')">＋ Add tenant</button></div></div>
+   <div class="stats" id="dashStats"></div>
+   <div class="grid2">
+    <div class="card"><div class="card-head"><div><h2>Rent collection overview</h2><p>Current selected month</p></div><button class="link-btn" onclick="navigate('rent')">View payments →</button></div><div class="report-grid" id="dashRent"></div></div>
+    <div class="card"><div class="card-head"><div><h2>Room occupancy</h2><p>Occupied beds vs available beds</p></div><button class="link-btn" onclick="navigate('rooms')">View rooms →</button></div><div id="dashOccupancy"></div></div>
+   </div>
+   <div class="card"><div class="card-head"><div><h2>Rent requiring attention</h2><p>Tenants with a balance for the selected month</p></div><button class="link-btn" onclick="navigate('reminders')">Open reminders →</button></div><div class="table-wrap"><table><thead><tr><th>Tenant</th><th>Room / bed</th><th>Rent due</th><th>Paid</th><th>Balance</th></tr></thead><tbody id="dashDueRows"></tbody></table></div></div>
+   <p class="footer-note">Demo data is fictional. Export a backup regularly during testing. This prototype stores data locally and does not sync across devices.</p>
+  </section>
+  <section id="roomsPage" class="page hidden">
+   <div class="heading"><div><h1>Rooms & beds</h1><p>Manage room capacity, bed allocation, occupancy and check-in/check-out.</p></div><div class="actions"><button class="btn primary" onclick="openModal('room')">＋ Add room</button></div></div>
+   <div class="notice">Each tenant is assigned to a room and bed. Checking a tenant out frees the bed while retaining their historical record.</div>
+   <div class="toolbar"><div class="search"><input id="roomSearch" placeholder="Search room number…" oninput="renderRooms()"></div><select class="filter" id="roomFilter" onchange="renderRooms()"><option value="all">All rooms</option><option value="vacant">Has vacancy</option><option value="full">Full rooms</option></select></div>
+   <div class="room-grid" id="roomGrid"></div>
+  </section>
+  <section id="tenantsPage" class="page hidden">
+   <div class="heading"><div><h1>Tenant management</h1><p>Contact details, ID record, emergency contact, stay dates and deposits.</p></div><div class="actions"><button class="btn primary" onclick="openModal('tenant')">＋ Add tenant</button></div></div>
+   <div class="stats" id="tenantStats"></div>
+   <div class="toolbar"><div class="search"><input id="tenantSearch" placeholder="Search name, phone, room…" oninput="renderTenants()"></div><select class="filter" id="tenantFilter" onchange="renderTenants()"><option value="active">Active tenants</option><option value="all">All tenants</option><option value="checkedout">Checked out</option></select></div>
+   <div class="card"><div class="table-wrap"><table><thead><tr><th>Tenant</th><th>Room / bed</th><th>Phone</th><th>Rent</th><th>Deposit</th><th>Joining date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="tenantRows"></tbody></table></div></div>
+  </section>
+  <section id="rentPage" class="page hidden">
+   <div class="heading"><div><h1>Rent & payments</h1><p>Track monthly rent, partial payments, advances, outstanding balances and payment history.</p></div><div class="actions"><button class="btn primary" onclick="openModal('payment')">＋ Record payment</button></div></div>
+   <div class="period-bar" style="margin-bottom:14px"><label for="rentPeriod" style="font-size:11px;font-weight:750">Rent month</label><input type="month" id="rentPeriod" onchange="renderAll()"></div>
+   <div class="stats" id="rentStats"></div>
+   <div class="toolbar"><div class="search"><input id="paymentSearch" placeholder="Search tenant, receipt or month…" oninput="renderRent()"></div><select class="filter" id="paymentFilter" onchange="renderRent()"><option value="all">All payment history</option><option value="current">Selected month</option></select></div>
+   <div class="card"><div class="table-wrap"><table><thead><tr><th>Tenant</th><th>Rent period</th><th>Amount</th><th>Payment date</th><th>Method</th><th>Receipt</th></tr></thead><tbody id="paymentRows"></tbody></table></div></div>
+  </section>
+  <section id="remindersPage" class="page hidden">
+   <div class="heading"><div><h1>Reminders & receipts</h1><p>Find outstanding rent, open a WhatsApp reminder, and print a payment receipt.</p></div><div class="actions"><button class="btn" onclick="navigate('rent')">Payment history</button></div></div>
+   <div class="notice warn">WhatsApp messages are prepared for you to review and send. Automated SMS/WhatsApp sending is not connected in this prototype.</div>
+   <div class="period-bar" style="margin-bottom:14px"><label for="reminderPeriod" style="font-size:11px;font-weight:750">Rent month</label><input type="month" id="reminderPeriod" onchange="renderReminders()"></div>
+   <div class="stats" id="reminderStats"></div>
+   <div class="card"><div class="card-head"><div><h2>Outstanding rent</h2><p>Open WhatsApp to send an individual reminder</p></div></div><div class="table-wrap"><table><thead><tr><th>Tenant</th><th>Room</th><th>Due</th><th>Paid</th><th>Balance</th><th>Reminder</th></tr></thead><tbody id="reminderRows"></tbody></table></div></div>
+   <div class="card" style="margin-top:15px"><div class="card-head"><div><h2>Recent receipts</h2><p>Print or save as PDF from the print dialog</p></div></div><div class="table-wrap"><table><thead><tr><th>Receipt</th><th>Tenant</th><th>Period</th><th>Amount</th><th>Date</th><th>Action</th></tr></thead><tbody id="receiptRows"></tbody></table></div></div>
+  </section>
+  <section id="reportsPage" class="page hidden">
+   <div class="heading"><div><h1>Reports & expenses</h1><p>Review collected rent, outstanding rent, expenses and estimated net cash flow.</p></div><div class="actions"><button class="btn primary" onclick="openModal('expense')">＋ Add expense</button></div></div>
+   <div class="period-bar" style="margin-bottom:14px"><label for="reportPeriod" style="font-size:11px;font-weight:750">Report month</label><input type="month" id="reportPeriod" onchange="renderReports()"></div>
+   <div class="stats" id="reportStats"></div>
+   <div class="grid2"><div class="card"><div class="card-head"><div><h2>Monthly summary</h2><p>Cash basis from recorded transactions</p></div></div><div id="reportSummary"></div></div><div class="card"><div class="card-head"><div><h2>Add an expense</h2><p>Utilities, maintenance, cleaning and other costs</p></div><button class="link-btn" onclick="openModal('expense')">＋ Add</button></div><div class="notice">Net cash flow = rent collected in the selected month minus expenses recorded in that month. Deposits are tracked separately and are not counted as rent income.</div></div></div>
+   <div class="card"><div class="card-head"><div><h2>Expense history</h2><p>All recorded operating costs</p></div><div class="search" style="max-width:260px"><input id="expenseSearch" placeholder="Search expense…" oninput="renderExpenses()"></div></div><div class="table-wrap"><table><thead><tr><th>Category</th><th>Description</th><th>Date</th><th>Amount</th><th>Action</th></tr></thead><tbody id="expenseRows"></tbody></table></div></div>
+  </section>
+  <section id="roommatesPage" class="page hidden">
+   <div class="heading"><div><h1>Roommate view</h1><p>Preview the information a tenant could see about other active people in their room.</p></div></div>
+   <div class="notice warn"><strong>Privacy:</strong> This is a local preview, not a secure tenant login. Only display a roommate's phone number when they have explicitly agreed to share it. Do not show ID details, emergency contacts, rent or payment history to roommates.</div>
+   <div class="card roommate-card"><div class="field"><label for="roommateTenant">Preview as active tenant</label><select id="roommateTenant" onchange="renderRoommateView()"></select></div><div id="roommatePreview" style="margin-top:18px"></div></div>
+   <p class="footer-note">For a real release, this page must be protected by verified tenant authentication and server-side authorization. A hidden page or local selection is not access control.</p>
+  </section>
+ </div>
+</main>
+</div>
+<div id="modalRoot"></div><div id="toastRoot"></div>
+<script>
+const STORE_KEY='staydesk_data_v2';
+const today=()=>new Date().toISOString().slice(0,10);
+const monthNow=()=>today().slice(0,7);
+const money=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(Number(n)||0);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const initials=n=>String(n||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase();
+const seed={
+ rooms:[{id:1,number:'101',capacity:3},{id:2,number:'102',capacity:2},{id:3,number:'201',capacity:4},{id:4,number:'202',capacity:2},{id:5,number:'301',capacity:3}],
+ tenants:[
+ {id:101,name:'Arun Kumar',phone:'9876543210',idType:'Aadhaar (last 4 only)',idDetail:'1234',emergencyName:'Kumar',emergencyPhone:'9876500001',roomId:1,bed:'A',rent:6500,deposit:10000,joined:'2026-09-05',checkout:'',status:'active',shareContact:true},
+ {id:102,name:'Priya S',phone:'9876543211',idType:'Not recorded',idDetail:'',emergencyName:'Suresh',emergencyPhone:'9876500002',roomId:1,bed:'B',rent:6500,deposit:10000,joined:'2026-09-10',checkout:'',status:'active',shareContact:false},
+ {id:103,name:'Vikram R',phone:'9876543212',idType:'Not recorded',idDetail:'',emergencyName:'Ravi',emergencyPhone:'9876500003',roomId:2,bed:'A',rent:7000,deposit:12000,joined:'2026-08-20',checkout:'',status:'active',shareContact:true},
+ {id:104,name:'Meena K',phone:'9876543213',idType:'Not recorded',idDetail:'',emergencyName:'Lakshmi',emergencyPhone:'9876500004',roomId:3,bed:'A',rent:6000,deposit:8000,joined:'2026-10-02',checkout:'',status:'active',shareContact:false},
+ {id:105,name:'Karthik P',phone:'9876543214',idType:'Not recorded',idDetail:'',emergencyName:'Prakash',emergencyPhone:'9876500005',roomId:3,bed:'B',rent:6000,deposit:8000,joined:'2026-09-15',checkout:'',status:'active',shareContact:true},
+ {id:106,name:'Naveen M',phone:'9876543215',idType:'Not recorded',idDetail:'',emergencyName:'Mohan',emergencyPhone:'9876500006',roomId:4,bed:'A',rent:7500,deposit:10000,joined:'2026-07-01',checkout:'',status:'active',shareContact:false},
+ {id:107,name:'Sample Former Tenant',phone:'9876543216',idType:'Not recorded',idDetail:'',emergencyName:'',emergencyPhone:'',roomId:5,bed:'A',rent:6200,deposit:5000,joined:'2026-01-10',checkout:'2026-08-31',status:'checkedout',shareContact:false}
+ ],
+ payments:[
+ {id:201,tenantId:101,period:monthNow(),amount:3000,date:today(),method:'UPI',ref:'SD-2026-001'},
+ {id:202,tenantId:102,period:monthNow(),amount:6500,date:today(),method:'UPI',ref:'SD-2026-002'},
+ {id:203,tenantId:103,period:monthNow(),amount:7000,date:today(),method:'Cash',ref:'SD-2026-003'},
+ {id:204,tenantId:105,period:monthNow(),amount:6000,date:today(),method:'Bank transfer',ref:'SD-2026-004'}
+ ],
+ expenses:[{id:301,category:'Electricity',amount:2450,date:today(),note:'Monthly electricity bill'},{id:302,category:'Wi-Fi',amount:999,date:today(),note:'Internet plan'}]
+};
+let data; try{data=JSON.parse(localStorage.getItem(STORE_KEY))||structuredClone(seed)}catch(e){data=JSON.parse(JSON.stringify(seed))}
+let page='dashboard';
+const save=()=>{localStorage.setItem(STORE_KEY,JSON.stringify(data));renderAll()};
+const roomOf=id=>data.rooms.find(r=>r.id===Number(id));
+const tenantOf=id=>data.tenants.find(t=>t.id===Number(id));
+const activeTenants=()=>data.tenants.filter(t=>t.status==='active');
+const roomTenants=id=>activeTenants().filter(t=>t.roomId===Number(id));
+const roomUsed=id=>roomTenants(id).length;
+const paidFor=(tenantId,period)=>data.payments.filter(p=>Number(p.tenantId)===Number(tenantId)&&p.period===period).reduce((s,p)=>s+Number(p.amount),0);
+const dueFor=(t,period)=>Math.max(0,Number(t.rent||0)-paidFor(t.id,period));
+const rentDue=()=>activeTenants().reduce((s,t)=>s+Number(t.rent||0),0);
+const paidMonth=period=>data.payments.filter(p=>p.period===period).reduce((s,p)=>s+Number(p.amount),0);
+const pendingTotal=period=>activeTenants().reduce((s,t)=>s+dueFor(t,period),0);
+const periodVal=id=>document.getElementById(id)?.value||monthNow();
+const badge=s=>`<span class="pill ${esc(s)}">${esc(s==='checkedout'?'Checked out':s[0]?.toUpperCase()+s.slice(1))}</span>`;
+const stat=(label,value,icon,foot)=>`<div class="stat"><div class="stat-top"><span>${label}</span><span class="stat-icon">${icon}</span></div><div class="stat-value">${value}</div><div class="stat-foot">${foot||''}</div></div>`;
+const emptyRow=(cols,msg)=>`<tr><td colspan="${cols}" class="empty">${msg}</td></tr>`;
+function navigate(p){page=p;document.querySelectorAll('.page').forEach(e=>e.classList.add('hidden'));document.getElementById(p+'Page').classList.remove('hidden');document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===p));document.getElementById('crumb').textContent=({'dashboard':'Dashboard','rooms':'Rooms & beds','tenants':'Tenants','rent':'Rent & payments','reminders':'Reminders & receipts','reports':'Reports & expenses','roommates':'Roommate view'})[p];window.scrollTo(0,0);renderAll()}
+document.getElementById('nav').addEventListener('click',e=>{const b=e.target.closest('button[data-page]');if(b)navigate(b.dataset.page)});
+function toast(msg){const root=document.getElementById('toastRoot');root.innerHTML=`<div class="toast">${esc(msg)}</div>`;setTimeout(()=>root.innerHTML='',2600)}
+function renderDashboard(){
+ const p=periodVal('rentPeriod'),active=activeTenants(),beds=data.rooms.reduce((s,r)=>s+r.capacity,0),used=data.rooms.reduce((s,r)=>s+roomUsed(r.id),0),collected=paidMonth(p),due=pendingTotal(p),expenses=data.expenses.filter(e=>e.date.slice(0,7)===p).reduce((s,e)=>s+Number(e.amount),0);
+ document.getElementById('dashStats').innerHTML=[stat('Active tenants',active.length,'♙',`${data.tenants.length-active.length} checked out / archived`),stat('Occupied beds',`${used} / ${beds}`,'▤',`${beds-used} beds available`),stat('Rent collected',money(collected),'₹',`For ${p}`),stat('Rent outstanding',money(due),'◷','Current month balances')].join('');
+ document.getElementById('dashRent').innerHTML=[['Collected',money(collected)],['Outstanding',money(due)],['Expenses',money(expenses)],['Net cash flow',money(collected-expenses)]].map(([a,b])=>`<div class="report-box"><span>${a}</span><strong>${b}</strong></div>`).join('');
+ document.getElementById('dashOccupancy').innerHTML=`<div class="report-grid"><div class="report-box"><span>Occupancy</span><strong>${beds?Math.round(used/beds*100):0}%</strong></div><div class="report-box"><span>Vacant beds</span><strong>${beds-used}</strong></div><div class="report-box"><span>Rooms</span><strong>${data.rooms.length}</strong></div></div>`;
+ const rows=active.filter(t=>dueFor(t,p)>0).sort((a,b)=>dueFor(b,p)-dueFor(a,p)).slice(0,6);
+ document.getElementById('dashDueRows').innerHTML=rows.length?rows.map(t=>`<tr><td><div class="person"><div class="mini-avatar">${initials(t.name)}</div><div><strong>${esc(t.name)}</strong><span class="sub">${esc(t.phone)}</span></div></div></td><td>${esc(roomOf(t.roomId)?.number||'—')} / ${esc(t.bed)}</td><td>${money(t.rent)}</td><td>${money(paidFor(t.id,p))}</td><td><strong>${money(dueFor(t,p))}</strong></td></tr>`).join(''):emptyRow(5,'No outstanding rent for this month.');
+}
+function renderRooms(){
+ const q=(document.getElementById('roomSearch')?.value||'').toLowerCase(),f=document.getElementById('roomFilter')?.value||'all';
+ const rooms=data.rooms.filter(r=>r.number.toLowerCase().includes(q)).filter(r=>f==='all'||(f==='vacant'?roomUsed(r.id)<r.capacity:roomUsed(r.id)>=r.capacity));
+ document.getElementById('roomGrid').innerHTML=rooms.length?rooms.map(r=>{const ts=roomTenants(r.id),used=ts.length;let beds='';for(let i=0;i<r.capacity;i++){const t=ts[i];beds+=`<div class="bed ${t?'':'empty'}">${t?esc(t.bed):'Vacant'}<br>${t?esc(t.name.split(' ')[0]):'—'}</div>`}return `<div class="room-card"><div class="room-top"><strong>Room ${esc(r.number)}</strong><span class="pill ${used===r.capacity?'occupied':'vacant'}">${used}/${r.capacity} beds</span></div><div class="beds">${beds}</div><div class="room-foot"><span>${r.capacity-used} available</span><button class="link-btn" onclick="openModal('tenant',null,${r.id})">＋ Assign tenant</button></div><div style="display:flex;justify-content:flex-end;margin-top:7px"><button class="link-btn" onclick="deleteRoom(${r.id})">Delete room</button></div></div>`}).join(''):'<div class="card empty">No rooms found. Add your first room.</div>';
+}
+function renderTenants(){
+ const q=(document.getElementById('tenantSearch')?.value||'').toLowerCase(),f=document.getElementById('tenantFilter')?.value||'active',active=activeTenants();
+ document.getElementById('tenantStats').innerHTML=[stat('Active tenants',active.length,'♙','Currently staying'),stat('Deposits held',money(active.reduce((s,t)=>s+Number(t.deposit||0),0)),'₹','Active tenant deposits'),stat('Expected monthly rent',money(rentDue()),'↗','Active tenant rent')].join('');
+ const ts=data.tenants.filter(t=>[t.name,t.phone,roomOf(t.roomId)?.number,t.idDetail,t.emergencyPhone].join(' ').toLowerCase().includes(q)).filter(t=>f==='all'||(f==='active'?t.status==='active':t.status==='checkedout'));
+ document.getElementById('tenantRows').innerHTML=ts.length?ts.map(t=>`<tr><td><div class="person"><div class="mini-avatar">${initials(t.name)}</div><div><strong>${esc(t.name)}</strong><span class="sub">${esc(t.idType==='Not recorded'?'ID not recorded':t.idType+(t.idDetail?' · '+t.idDetail:''))}</span><span class="sub">Emergency: ${esc(t.emergencyName||'—')} ${esc(t.emergencyPhone||'')}</span></div></div></td><td>${t.status==='active'?esc(roomOf(t.roomId)?.number||'—')+' / '+esc(t.bed):'—'}</td><td>${esc(t.phone)}</td><td>${money(t.rent)}</td><td>${money(t.deposit)}</td><td>${esc(t.joined||'—')}</td><td>${badge(t.status)}</td><td><button class="link-btn" onclick="openModal('tenant',${t.id})">Edit</button>${t.status==='active'?`<button class="link-btn" onclick="checkoutTenant(${t.id})">Check out</button>`:`<button class="link-btn" onclick="restoreTenant(${t.id})">Restore</button>`}</td></tr>`).join(''):emptyRow(8,'No tenants found.');
+}
+function renderRent(){
+ const p=periodVal('rentPeriod'),q=(document.getElementById('paymentSearch')?.value||'').toLowerCase(),f=document.getElementById('paymentFilter')?.value||'all';
+ const expected=rentDue(),collected=paidMonth(p),outstanding=pendingTotal(p);
+ document.getElementById('rentStats').innerHTML=[stat('Expected this month',money(expected),'₹','Active tenant rent'),stat('Collected this month',money(collected),'✓','Recorded transactions'),stat('Outstanding balance',money(outstanding),'◷','Per-tenant balances'),stat('Advance deposits held',money(activeTenants().reduce((s,t)=>s+Number(t.deposit||0),0)),'▤','Tracked separately from rent')].join('');
+ let rows=data.payments.filter(x=>{const t=tenantOf(x.tenantId);return [t?.name,x.ref,x.period,x.method].join(' ').toLowerCase().includes(q)}).filter(x=>f==='all'||x.period===p).sort((a,b)=>b.date.localeCompare(a.date));
+ document.getElementById('paymentRows').innerHTML=rows.length?rows.map(x=>`<tr><td><strong>${esc(tenantOf(x.tenantId)?.name||'Former tenant')}</strong><span class="sub">${esc(roomOf(tenantOf(x.tenantId)?.roomId)?.number||'Former room')}</span></td><td>${esc(x.period)}</td><td><strong>${money(x.amount)}</strong></td><td>${esc(x.date)}</td><td>${esc(x.method)}</td><td><button class="btn small" onclick="printReceipt(${x.id})">Print ${esc(x.ref)}</button></td></tr>`).join(''):emptyRow(6,'No payment history matches your filters.');
+}
+function renderReminders(){
+ const p=periodVal('reminderPeriod'),active=activeTenants(),out=active.filter(t=>dueFor(t,p)>0);
+ document.getElementById('reminderStats').innerHTML=[stat('Tenants with balance',out.length,'◷',`For ${p}`),stat('Outstanding rent',money(out.reduce((s,t)=>s+dueFor(t,p),0)),'₹','Current selected month'),stat('Fully paid',active.filter(t=>dueFor(t,p)===0).length,'✓','Active tenants')].join('');
+ document.getElementById('reminderRows').innerHTML=out.length?out.map(t=>{const bal=dueFor(t,p),msg=`Hi ${t.name}, this is a friendly reminder that ${money(bal)} rent is pending for ${p} for room ${roomOf(t.roomId)?.number||''}. Please contact the PG manager if you have already paid. Thank you.`;const digits=t.phone.replace(/\D/g,'');return `<tr><td><strong>${esc(t.name)}</strong><span class="sub">${esc(t.phone)}</span></td><td>${esc(roomOf(t.roomId)?.number||'—')}</td><td>${money(t.rent)}</td><td>${money(paidFor(t.id,p))}</td><td><strong>${money(bal)}</strong></td><td><a class="btn small" href="https://wa.me/${digits.startsWith('91')?digits:'91'+digits}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">WhatsApp</a></td></tr>`}).join(''):emptyRow(6,'No rent balances for this month.');
+ const recent=data.payments.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,10);
+ document.getElementById('receiptRows').innerHTML=recent.length?recent.map(x=>`<tr><td>${esc(x.ref)}</td><td>${esc(tenantOf(x.tenantId)?.name||'Former tenant')}</td><td>${esc(x.period)}</td><td>${money(x.amount)}</td><td>${esc(x.date)}</td><td><button class="btn small" onclick="printReceipt(${x.id})">Print receipt</button></td></tr>`).join(''):emptyRow(6,'No receipts yet. Record a payment to generate one.');
+}
+function renderReports(){
+ const p=periodVal('reportPeriod'),collected=paidMonth(p),expenses=data.expenses.filter(e=>e.date.slice(0,7)===p).reduce((s,e)=>s+Number(e.amount),0),out=pendingTotal(p),expected=rentDue();
+ document.getElementById('reportStats').innerHTML=[stat('Rent collected',money(collected),'₹',p),stat('Outstanding rent',money(out),'◷','Active tenants'),stat('Expenses',money(expenses),'↘','Recorded in month'),stat('Net cash flow',money(collected-expenses),'↗','Collected rent less expenses')].join('');
+ document.getElementById('reportSummary').innerHTML=`<div class="report-grid"><div class="report-box"><span>Expected rent</span><strong>${money(expected)}</strong></div><div class="report-box"><span>Rent received</span><strong>${money(collected)}</strong></div><div class="report-box"><span>Expenses</span><strong>${money(expenses)}</strong></div></div><p style="font-size:10px;color:var(--muted);line-height:1.6;margin-top:13px">Outstanding is calculated as each active tenant's monthly rent less payments allocated to ${esc(p)}. Net cash flow uses recorded rent payments minus recorded expenses for the month; it is an operational estimate, not a tax or accounting statement.</p>`;
+ renderExpenses();
+}
+function renderExpenses(){
+ const q=(document.getElementById('expenseSearch')?.value||'').toLowerCase(),rows=data.expenses.filter(e=>[e.category,e.note,e.date].join(' ').toLowerCase().includes(q)).sort((a,b)=>b.date.localeCompare(a.date));
+ document.getElementById('expenseRows').innerHTML=rows.length?rows.map(e=>`<tr><td><strong>${esc(e.category)}</strong></td><td>${esc(e.note)}</td><td>${esc(e.date)}</td><td><strong>${money(e.amount)}</strong></td><td><button class="link-btn" onclick="deleteExpense(${e.id})">Delete</button></td></tr>`).join(''):emptyRow(5,'No expenses recorded.');
+}
+function renderRoommateView(){
+ const select=document.getElementById('roommateTenant');if(!select)return;
+ const current=select.value;
+ select.innerHTML=activeTenants().map(t=>`<option value="${t.id}">${esc(t.name)} — Room ${esc(roomOf(t.roomId)?.number||'')}</option>`).join('');
+ if(activeTenants().some(t=>String(t.id)===current))select.value=current;
+ const t=tenantOf(select.value),root=document.getElementById('roommatePreview');
+ if(!t){root.innerHTML='<div class="empty">Add an active tenant to preview roommate details.</div>';return}
+ const others=roomTenants(t.roomId).filter(x=>x.id!==t.id);
+ root.innerHTML=`<div class="notice">Showing room ${esc(roomOf(t.roomId)?.number||'—')} to <strong>${esc(t.name)}</strong>. Only contact details with explicit sharing consent appear.</div>${others.length?others.map(x=>`<div class="roommate-person"><div class="mini-avatar">${initials(x.name)}</div><div><strong>${esc(x.name)}</strong><p>Bed ${esc(x.bed)}${x.shareContact?' · Phone: '+esc(x.phone):' · Phone number not shared'}</p></div></div>`).join(''):'<div class="empty">No other active roommates are assigned to this room.</div>'}`;
+}
+
+let currentRole=null, currentTenantId=null, currentProperty='all';
+function setupLoginOptions(){
+ const s=document.getElementById('loginTenant');
+ s.innerHTML=activeTenants().map(t=>`<option value="${t.id}">${esc(t.name)} — Room ${esc(roomOf(t.roomId)?.number||'')}</option>`).join('');
+ document.getElementById('loginRole').addEventListener('change',updateLoginFields);
+ updateLoginFields();
+}
+function updateLoginFields(){
+ const role=document.getElementById('loginRole').value;
+ document.getElementById('tenantPickerWrap').classList.toggle('hidden',role!=='tenant');
+ document.getElementById('propertyPickerWrap').classList.toggle('hidden',role!=='admin');
+ document.getElementById('loginEmail').placeholder=role==='tenant'?'tenant@staydesk.in':role==='admin'?'owner@staydesk.in':'superadmin@staydesk.in';
+}
+function demoLogin(){
+ currentRole=document.getElementById('loginRole').value;
+ currentProperty=document.getElementById('loginProperty').value;
+ currentTenantId=Number(document.getElementById('loginTenant').value)||null;
+ document.getElementById('loginScreen').classList.add('hidden');
+ document.getElementById('ownerApp').classList.add('hidden');
+ document.getElementById('tenantPortal').classList.add('hidden');
+ document.getElementById('superAdminPortal').classList.add('hidden');
+ if(currentRole==='tenant'){
+  document.getElementById('tenantPortal').classList.remove('hidden');renderTenantPortal();
+ }else if(currentRole==='superadmin'){
+  document.getElementById('superAdminPortal').classList.remove('hidden');renderSuperAdminPortal();
+ }else{
+  document.getElementById('ownerApp').classList.remove('hidden');
+  navigate('dashboard');
+  document.getElementById('ownerPropertyWrap')?.classList.remove('hidden');
+  const ownerLabel=document.querySelector('.topbar .owner');
+  if(ownerLabel)ownerLabel.innerHTML=`PG Owner / Admin<small>${currentProperty==='all'?'All assigned PGs':currentProperty==='pg1'?'PG 1 · Main Street':'PG 2 · Katpadi'} · Demo mode</small>`;
+  renderAll();
+ }
+}
+function demoLogout(){
+ currentRole=null;currentTenantId=null;currentProperty='all';
+ document.getElementById('ownerApp').classList.add('hidden');
+ document.getElementById('tenantPortal').classList.add('hidden');
+ document.getElementById('superAdminPortal').classList.add('hidden');
+ document.getElementById('loginScreen').classList.remove('hidden');
+}
+function renderTenantPortal(){
+ const t=tenantOf(currentTenantId);
+ if(!t){document.getElementById('tenantWelcome').textContent='No demo tenant selected';return}
+ document.getElementById('tenantWelcome').textContent=`Hello, ${t.name.split(' ')[0]}`;
+ const room=roomOf(t.roomId),p=monthNow(),paid=paidFor(t.id,p),balance=dueFor(t,p);
+ document.getElementById('tenantPortalStats').innerHTML=[stat('My room',room?.number||'—','▤',`Bed ${t.bed||'—'}`),stat('Monthly rent',money(t.rent),'₹','Current rent amount'),stat('Paid this month',money(paid),'✓',p),stat('Remaining balance',money(balance),'◷',balance?'Payment still due':'Rent covered')].join('');
+ document.getElementById('tenantStayDetails').innerHTML=`<div class="roommate-person"><div class="mini-avatar">${initials(t.name)}</div><div><strong>${esc(t.name)}</strong><p>${esc(t.phone)}</p></div></div><div class="report-grid" style="margin-top:12px"><div class="report-box"><span>Room / bed</span><strong>${esc(room?.number||'—')} / ${esc(t.bed||'—')}</strong></div><div class="report-box"><span>Joining date</span><strong>${esc(t.joined||'—')}</strong></div><div class="report-box"><span>Deposit recorded</span><strong>${money(t.deposit)}</strong></div></div>`;
+ const roommates=roomTenants(t.roomId).filter(x=>x.id!==t.id);
+ document.getElementById('tenantRoommates').innerHTML=roommates.length?roommates.map(x=>`<div class="roommate-person"><div class="mini-avatar">${initials(x.name)}</div><div><strong>${esc(x.name)}</strong><p>Bed ${esc(x.bed)}${x.shareContact?' · Phone: '+esc(x.phone):' · Phone number not shared'}</p></div></div>`).join(''):'<div class="empty">No other active roommates in your room.</div>';
+ const pays=data.payments.filter(x=>Number(x.tenantId)===t.id).sort((a,b)=>b.date.localeCompare(a.date));
+ document.getElementById('tenantPayments').innerHTML=pays.length?pays.map(x=>`<tr><td>${esc(x.period)}</td><td>${esc(x.date)}</td><td><strong>${money(x.amount)}</strong></td><td>${esc(x.method)}</td><td><button class="btn small" onclick="printReceipt(${x.id})">Print receipt</button></td></tr>`).join(''):emptyRow(5,'No payment records yet.');
+}
+function renderSuperAdminPortal(){
+ document.getElementById('superStats').innerHTML=[stat('Properties',2,'▤','Illustrative demo setup'),stat('PG admins',1,'♙','One owner can manage multiple PGs'),stat('Active tenants',activeTenants().length,'♧','Sample records only'),stat('Platform status','Demo','✓','No real user accounts connected')].join('');
+ document.getElementById('superPropertyRows').innerHTML=`<tr><td><strong>PG 1 · Main Street</strong><span class="sub">Property ID: pg1</span></td><td>Demo owner</td><td>${activeTenants().length}</td><td>${badge('active')}</td><td><button class="btn small" onclick="toast('Property management requires secure backend support.')">Manage</button></td></tr><tr><td><strong>PG 2 · Katpadi</strong><span class="sub">Property ID: pg2</span></td><td>Demo owner</td><td>—</td><td>${badge('active')}</td><td><button class="btn small" onclick="toast('Property management requires secure backend support.')">Manage</button></td></tr>`;
+}
+
+function renderAll(){renderDashboard();renderRooms();renderTenants();renderRent();renderReminders();renderReports();renderRoommateView()}
+function deleteRoom(id){if(roomUsed(id))return toast('Move or check out current tenants before deleting this room.');if(confirm('Delete this room?')){data.rooms=data.rooms.filter(r=>r.id!==id);save();toast('Room deleted.')}}
+function checkoutTenant(id){const t=tenantOf(id);if(!t||t.status!=='active')return;if(confirm(`Check out ${t.name}? Their history will be retained and their bed freed.`)){t.status='checkedout';t.checkout=today();save();toast('Tenant checked out; bed is now available.')}}
+function restoreTenant(id){const t=tenantOf(id),r=roomOf(t.roomId);if(!r)return toast('Room no longer exists. Edit tenant and choose a room first.');if(roomUsed(r.id)>=r.capacity||roomTenants(r.id).some(x=>x.bed===t.bed))return toast('Previous room/bed is not available. Edit allocation first.');t.status='active';t.checkout='';save();toast('Tenant restored.') }
+function deleteExpense(id){if(confirm('Delete this expense record?')){data.expenses=data.expenses.filter(e=>e.id!==id);save();toast('Expense deleted.')}}
+function exportData(){const blob=new Blob([JSON.stringify({exportedAt:new Date().toISOString(),data},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`staydesk-backup-${today()}.json`;a.click();URL.revokeObjectURL(url);toast('Backup export started. Store the file securely.')}
+function printReceipt(id){
+ const p=data.payments.find(x=>x.id===Number(id));if(!p)return;const t=tenantOf(p.tenantId),r=roomOf(t?.roomId);
+ const w=window.open('','_blank','width=700,height=700');if(!w)return toast('Allow pop-ups to print receipts.');
+ w.document.write(`<!doctype html><html><head><title>StayDesk Receipt ${esc(p.ref)}</title><meta name="viewport" content="width=device-width"><style>body{font:15px Arial;color:#182238;padding:35px;max-width:680px;margin:auto}.head{display:flex;justify-content:space-between;border-bottom:2px solid #4776e6;padding-bottom:18px}.muted{color:#667085;font-size:13px}.box{border:1px solid #dfe5ef;border-radius:10px;padding:20px;margin-top:22px}.row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #eef0f4}.row:last-child{border:0}.amount{font-size:25px;font-weight:bold;color:#16856b}.foot{margin-top:35px;color:#667085;font-size:12px}@media print{button{display:none}}</style></head><body><div class="head"><div><h1>StayDesk</h1><div class="muted">PG rent payment receipt</div></div><div style="text-align:right"><strong>${esc(p.ref)}</strong><div class="muted">Payment date: ${esc(p.date)}</div></div></div><div class="box"><div class="row"><span>Received from</span><strong>${esc(t?.name||'Former tenant')}</strong></div><div class="row"><span>Room / bed</span><strong>${esc(r?.number||'—')} / ${esc(t?.bed||'—')}</strong></div><div class="row"><span>Rent period</span><strong>${esc(p.period)}</strong></div><div class="row"><span>Payment method</span><strong>${esc(p.method)}</strong></div><div class="row"><span>Amount received</span><strong class="amount">${money(p.amount)}</strong></div></div><p class="foot">This receipt records a payment entered into StayDesk. Please retain it for your records. This is a locally generated receipt and is not a tax invoice.</p><button onclick="window.print()">Print / Save as PDF</button></body></html>`);w.document.close();setTimeout(()=>w.print(),300);
+}
+function openModal(type,id=null,roomPreset=null){
+ const editing=type==='tenant'&&id?tenantOf(id):null;let title='',fields='';
+ if(type==='room'){title='Add room';fields=`<div class="field"><label>Room number *</label><input name="number" required placeholder="e.g. 301"></div><div class="field"><label>Bed capacity *</label><select name="capacity">${[1,2,3,4,5,6,8,10].map(n=>`<option value="${n}" ${n===2?'selected':''}>${n}</option>`).join('')}</select></div>`}
+ if(type==='tenant'){
+ title=editing?'Edit tenant details':'Add tenant';
+ const roomOptions=data.rooms.map(r=>`<option value="${r.id}" ${(Number(roomPreset)===r.id||editing?.roomId===r.id)?'selected':''}>Room ${esc(r.number)} — ${Math.max(0,r.capacity-roomUsed(r.id)+(editing&&editing.roomId===r.id?1:0))} bed(s) free</option>`).join('');
+ const beds=['A','B','C','D','E','F','G','H','I','J'].map(b=>`<option ${editing?.bed===b?'selected':''}>${b}</option>`).join('');
+ fields=`<div class="field"><label>Full name *</label><input name="name" required value="${esc(editing?.name||'')}" placeholder="Tenant full name"></div>
+ <div class="field"><label>Phone number *</label><input name="phone" type="tel" required value="${esc(editing?.phone||'')}" placeholder="10-digit phone number"></div>
+ <div class="field"><label>Room *</label><select name="roomId" required>${roomOptions}</select></div>
+ <div class="field"><label>Bed *</label><select name="bed">${beds}</select></div>
+ <div class="field"><label>Monthly rent (₹) *</label><input name="rent" type="number" min="0" required value="${esc(editing?.rent??'')}" placeholder="6500"></div>
+ <div class="field"><label>Advance / deposit (₹)</label><input name="deposit" type="number" min="0" value="${esc(editing?.deposit??0)}"></div>
+ <div class="field"><label>Joining date *</label><input name="joined" type="date" required value="${esc(editing?.joined||today())}"></div>
+ <div class="field"><label>ID detail type</label><select name="idType">${['Not recorded','Aadhaar (last 4 only)','Passport','Driving licence','Voter ID','Other'].map(x=>`<option ${editing?.idType===x?'selected':''}>${x}</option>`).join('')}</select><small>Collect only what is necessary. Avoid storing full Aadhaar numbers in this prototype.</small></div>
+ <div class="field"><label>ID reference (optional)</label><input name="idDetail" value="${esc(editing?.idDetail||'')}" maxlength="40" placeholder="e.g. last 4 digits only"></div>
+ <div class="field"><label>Emergency contact name</label><input name="emergencyName" value="${esc(editing?.emergencyName||'')}" placeholder="Name"></div>
+ <div class="field"><label>Emergency contact phone</label><input name="emergencyPhone" type="tel" value="${esc(editing?.emergencyPhone||'')}" placeholder="Contact number"></div>
+ <div class="field full"><label class="checkline"><input type="checkbox" name="shareContact" ${editing?.shareContact?'checked':''}> Tenant has explicitly agreed to share their phone number with verified roommates.</label></div>`;
+ }
+ if(type==='payment'){title='Record rent payment';fields=`<div class="field full"><label>Tenant *</label><select name="tenantId" required>${activeTenants().map(t=>`<option value="${t.id}">${esc(t.name)} — Room ${esc(roomOf(t.roomId)?.number||'')}</option>`).join('')}</select></div><div class="field"><label>Rent period *</label><input name="period" type="month" required value="${periodVal('rentPeriod')}"></div><div class="field"><label>Amount received (₹) *</label><input name="amount" type="number" min="1" required placeholder="Amount received"></div><div class="field"><label>Payment date *</label><input name="date" type="date" required value="${today()}"></div><div class="field"><label>Method</label><select name="method"><option>UPI</option><option>Cash</option><option>Bank transfer</option><option>Other</option></select></div><div class="field full"><label>Reference (optional)</label><input name="ref" placeholder="Transaction ID or receipt reference"></div>`}
+ if(type==='expense'){title='Add expense';fields=`<div class="field"><label>Category *</label><select name="category">${['Electricity','Water','Wi-Fi','Maintenance','Cleaning','Food / supplies','Other'].map(x=>`<option>${x}</option>`).join('')}</select></div><div class="field"><label>Amount (₹) *</label><input name="amount" type="number" min="1" required placeholder="1200"></div><div class="field"><label>Date *</label><input name="date" type="date" required value="${today()}"></div><div class="field"><label>Description *</label><input name="note" required placeholder="Monthly bill"></div>`}
+ if(type==='payment'&&!activeTenants().length)return toast('Add an active tenant before recording a payment.');
+ if(type==='tenant'&&!data.rooms.length)return toast('Add a room before adding a tenant.');
+ document.getElementById('modalRoot').innerHTML=`<div class="modal-backdrop" onclick="if(event.target===this)closeModal()"><div class="modal"><div class="modal-head"><h2>${title}</h2><button class="close" onclick="closeModal()" aria-label="Close">×</button></div><form id="entryForm"><div class="form-grid">${fields}</div><div class="modal-actions"><button type="button" class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" type="submit">Save record</button></div></form></div></div>`;
+ const form=document.getElementById('entryForm');
+ form.addEventListener('submit',e=>{
+ e.preventDefault();const fd=new FormData(form),v=Object.fromEntries(fd.entries());
+ if(type==='room'){const number=v.number.trim();if(data.rooms.some(r=>r.number.toLowerCase()===number.toLowerCase()))return toast('Room number already exists.');data.rooms.push({id:Date.now(),number,capacity:Number(v.capacity)});save();closeModal();toast('Room added.');return}
+ if(type==='tenant'){
+  const roomId=Number(v.roomId),room=roomOf(roomId),other=activeTenants().filter(t=>t.roomId===roomId&&t.id!==editing?.id);
+  if(!room||other.length>=room.capacity)return toast('This room is full. Choose another room.');
+  if(other.some(t=>t.bed===v.bed))return toast('That bed is already assigned.');
+  if(!/^[0-9+\s()-]{8,18}$/.test(v.phone))return toast('Enter a valid phone number.');
+  const item={...(editing||{}),id:editing?.id||Date.now(),name:v.name.trim(),phone:v.phone.trim(),roomId,bed:v.bed,rent:Number(v.rent),deposit:Number(v.deposit||0),joined:v.joined,idType:v.idType||'Not recorded',idDetail:v.idDetail.trim(),emergencyName:v.emergencyName.trim(),emergencyPhone:v.emergencyPhone.trim(),shareContact:fd.has('shareContact'),status:editing?.status||'active',checkout:editing?.checkout||''};
+  if(editing){data.tenants=data.tenants.map(t=>t.id===editing.id?item:t)}else data.tenants.push(item);
+  save();closeModal();toast(editing?'Tenant updated.':'Tenant added.');return
+ }
+ if(type==='payment'){const t=tenantOf(v.tenantId);if(!t||t.status!=='active')return toast('Choose an active tenant.');const ref=v.ref.trim()||`SD-${Date.now().toString().slice(-8)}`;data.payments.push({id:Date.now(),tenantId:Number(v.tenantId),period:v.period,amount:Number(v.amount),date:v.date,method:v.method,status:'paid',ref});save();closeModal();toast('Payment recorded. Receipt is ready.');return}
+ if(type==='expense'){data.expenses.push({id:Date.now(),category:v.category,note:v.note.trim(),date:v.date,amount:Number(v.amount)});save();closeModal();toast('Expense added.');return}
+ });
+}
+function closeModal(){document.getElementById('modalRoot').innerHTML=''}
+document.getElementById('rentPeriod').value=monthNow();document.getElementById('reminderPeriod').value=monthNow();document.getElementById('reportPeriod').value=monthNow();
+setupLoginOptions();
+renderAll();
+</script>
+</body></html>
