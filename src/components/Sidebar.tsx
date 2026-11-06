@@ -96,7 +96,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange, prope
       {/* Footer Info */}
       <div className="p-4 border-t border-slate-800 text-[11px] text-slate-500 leading-relaxed">
         <span className="font-bold text-slate-400 block mb-0.5">StayDesk v2.0 Production</span>
-        Relational SQLite · JWT Authenticated · Capacitor Ready
+        Relational SQLite · JWT Authenticated · Web Ready
       </div>
     </aside>
   );

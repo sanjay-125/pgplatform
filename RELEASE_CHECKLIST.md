@@ -21,7 +21,6 @@
 - [x] Maintenance complaint ticket tracker (tenant to owner workflow).
 - [x] Real-time security audit logging for administrative actions.
 - [x] Fully responsive modern React + Tailwind interface with desktop sidebar and mobile bottom navigation.
-- [x] Capacitor Android configuration updated and synced with production bundle.
 
 ## Google Play release
 - [ ] Confirm unique final application ID (`com.staydesk.pgmanager`).

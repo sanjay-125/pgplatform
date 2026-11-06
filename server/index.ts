@@ -274,7 +274,7 @@ app.delete('/api/rooms/:id', authenticateToken, requireRole('superadmin', 'owner
     return;
   }
 
-  const activeTenants = db.prepare('SELECT COUNT(*) as count FROM tenants WHERE room_id = ? AND status = "active"').get(roomId) as any;
+  const activeTenants = db.prepare('SELECT COUNT(*) as count FROM tenants WHERE room_id = ? AND status = \'active\'').get(roomId) as any;
   if (activeTenants.count > 0) {
     res.status(400).json({ error: 'Cannot delete room while active tenants are staying in it. Please relocate or check out tenants first.' });
     return;
@@ -414,7 +414,7 @@ app.post('/api/properties/:propertyId/tenants', authenticateToken, requireRole('
     );
 
     // Update bed status to occupied
-    db.prepare('UPDATE beds SET status = "occupied" WHERE id = ?').run(bedId);
+    db.prepare('UPDATE beds SET status = \'occupied\' WHERE id = ?').run(bedId);
 
     logAudit(req.user!.id, 'ADD_TENANT', `Tenant ${name} assigned to Bed ${bed.bed_number}`, req.ip);
     res.status(201).json({ id: Number(tRes.lastInsertRowid), message: 'Tenant added and assigned successfully' });
@@ -488,10 +488,10 @@ app.post('/api/tenants/:id/checkout', authenticateToken, requireRole('superadmin
   const checkoutDate = req.body.checkoutDate || new Date().toISOString().slice(0, 10);
 
   // Free the bed
-  db.prepare('UPDATE beds SET status = "vacant" WHERE id = ?').run(tenant.bed_id);
+  db.prepare('UPDATE beds SET status = \'vacant\' WHERE id = ?').run(tenant.bed_id);
 
   // Update tenant status
-  db.prepare('UPDATE tenants SET status = "checkedout", checkout_date = ? WHERE id = ?').run(checkoutDate, tenantId);
+  db.prepare('UPDATE tenants SET status = \'checkedout\', checkout_date = ? WHERE id = ?').run(checkoutDate, tenantId);
 
   logAudit(req.user!.id, 'CHECKOUT_TENANT', `Checked out ${tenant.name}`, req.ip);
   res.json({ message: 'Tenant checked out and bed freed successfully' });
@@ -517,8 +517,8 @@ app.post('/api/tenants/:id/restore', authenticateToken, requireRole('superadmin'
     return;
   }
 
-  db.prepare('UPDATE beds SET status = "occupied" WHERE id = ?').run(tenant.bed_id);
-  db.prepare('UPDATE tenants SET status = "active", checkout_date = NULL WHERE id = ?').run(tenantId);
+  db.prepare('UPDATE beds SET status = \'occupied\' WHERE id = ?').run(tenant.bed_id);
+  db.prepare('UPDATE tenants SET status = \'active\', checkout_date = NULL WHERE id = ?').run(tenantId);
 
   logAudit(req.user!.id, 'RESTORE_TENANT', `Restored ${tenant.name}`, req.ip);
   res.json({ message: 'Tenant restored successfully' });
@@ -1038,8 +1038,8 @@ app.post('/api/tenant/complaints', authenticateToken, (req: AuthRequest, res: Re
 // -------------------------------------------------------------
 app.get('/api/superadmin/stats', authenticateToken, requireRole('superadmin'), (req: Request, res: Response) => {
   const propertyCount = (db.prepare('SELECT COUNT(*) as c FROM properties').get() as any).c;
-  const ownerCount = (db.prepare('SELECT COUNT(*) as c FROM users WHERE role = "owner"').get() as any).c;
-  const tenantCount = (db.prepare('SELECT COUNT(*) as c FROM tenants WHERE status = "active"').get() as any).c;
+  const ownerCount = (db.prepare('SELECT COUNT(*) as c FROM users WHERE role = \'owner\'').get() as any).c;
+  const tenantCount = (db.prepare('SELECT COUNT(*) as c FROM tenants WHERE status = \'active\'').get() as any).c;
   const bedStats = db.prepare(`
     SELECT COUNT(*) as total,
            SUM(CASE WHEN status = 'occupied' THEN 1 ELSE 0 END) as occupied
