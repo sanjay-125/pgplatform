@@ -133,9 +133,7 @@ export const App: React.FC = () => {
           {!activeProperty ? (
             <div className="text-center py-16 bg-white rounded-3xl border border-slate-200">
               <h2 className="text-lg font-bold text-slate-800">No properties assigned</h2>
-              <p className="text-xs text-slate-500 mt-1">
-                Please contact the platform super administrator to assign a PG property.
-              </p>
+              <p className="text-xs text-slate-500 mt-1">Please contact the platform super administrator to assign a PG property.</p>
             </div>
           ) : (
             <>

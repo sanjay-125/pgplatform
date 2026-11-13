@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, BedDouble } from 'lucide-react';
 import { useToast } from './Toast';
 import { api } from '../services/api';
+import { StyledSelect } from './StyledSelect';
 
 interface RoomModalProps {
   propertyId: number;
@@ -96,17 +97,17 @@ export const RoomModal: React.FC<RoomModalProps> = ({ propertyId, onClose, onSuc
               <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
                 Bed Capacity *
               </label>
-              <select
+              <StyledSelect
                 className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500"
                 value={form.capacity}
-                onChange={(e) => setForm({ ...form, capacity: Number(e.target.value) })}
+                onValueChange={(capacity) => setForm({ ...form, capacity: Number(capacity) })}
               >
                 {[1, 2, 3, 4, 5, 6, 8].map((n) => (
                   <option key={n} value={n}>
                     {n} Bed{n > 1 ? 's' : ''} ({n}-Sharing)
                   </option>
                 ))}
-              </select>
+              </StyledSelect>
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
@@ -126,14 +127,14 @@ export const RoomModal: React.FC<RoomModalProps> = ({ propertyId, onClose, onSuc
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Type</label>
-              <select
+              <StyledSelect
                 className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500"
                 value={form.roomType}
-                onChange={(e) => setForm({ ...form, roomType: e.target.value })}
+                onValueChange={(roomType) => setForm({ ...form, roomType })}
               >
                 <option value="Non-AC">Non-AC</option>
                 <option value="AC">AC</option>
-              </select>
+              </StyledSelect>
             </div>
             <div className="flex items-center pt-6">
               <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">

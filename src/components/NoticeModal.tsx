@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, Megaphone } from 'lucide-react';
 import { useToast } from './Toast';
 import { api } from '../services/api';
+import { StyledSelect } from './StyledSelect';
 
 interface NoticeModalProps {
   propertyId: number;
@@ -75,15 +76,15 @@ export const NoticeModal: React.FC<NoticeModalProps> = ({ propertyId, onClose, o
 
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Priority</label>
-            <select
+            <StyledSelect
               className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500"
               value={form.priority}
-              onChange={(e) => setForm({ ...form, priority: e.target.value as any })}
+              onValueChange={(priority) => setForm({ ...form, priority: priority as any })}
             >
               <option value="normal">Normal Announcement</option>
               <option value="high">Important Notice</option>
               <option value="urgent">Urgent / Emergency Alert</option>
-            </select>
+            </StyledSelect>
           </div>
 
           <div>

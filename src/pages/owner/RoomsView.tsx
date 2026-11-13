@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Property, Room } from '../../types';
 import { api } from '../../services/api';
+import { StyledSelect } from '../../components/StyledSelect';
 import { useToast } from '../../components/Toast';
 import { Plus, Search, Trash2, UserPlus, CheckCircle2 } from 'lucide-react';
 
@@ -87,15 +88,15 @@ export const RoomsView: React.FC<RoomsViewProps> = ({ property, onOpenAddRoom, o
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <select
+        <StyledSelect
           className="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
           value={filterVacancy}
-          onChange={(e) => setFilterVacancy(e.target.value as any)}
+          onValueChange={(filter) => setFilterVacancy(filter as any)}
         >
           <option value="all">All Rooms ({rooms.length})</option>
           <option value="vacant">Has Vacancy</option>
           <option value="full">Full Occupancy</option>
-        </select>
+        </StyledSelect>
       </div>
 
       {/* Room Grid */}

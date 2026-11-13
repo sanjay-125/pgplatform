@@ -3,6 +3,7 @@ import { X, CreditCard } from 'lucide-react';
 import { useToast } from './Toast';
 import { api } from '../services/api';
 import { Tenant, Payment } from '../types';
+import { StyledSelect } from './StyledSelect';
 
 interface PaymentModalProps {
   propertyId: number;
@@ -101,17 +102,17 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
               Select Tenant *
             </label>
-            <select
+            <StyledSelect
               className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500"
               value={form.tenantId}
-              onChange={(e) => setForm({ ...form, tenantId: Number(e.target.value) })}
+                onValueChange={(tenantId) => setForm({ ...form, tenantId: Number(tenantId) })}
             >
               {activeTenants.map((t) => (
                 <option key={t.id} value={t.id}>
                   {t.name} (Room {t.room_number || '—'} / Bed {t.bed_number || '—'} · ₹{t.rent}/mo)
                 </option>
               ))}
-            </select>
+            </StyledSelect>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -160,17 +161,17 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
               <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
                 Payment Method *
               </label>
-              <select
+              <StyledSelect
                 className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500"
                 value={form.method}
-                onChange={(e) => setForm({ ...form, method: e.target.value as any })}
+                onValueChange={(method) => setForm({ ...form, method: method as any })}
               >
                 <option value="UPI">UPI (GPay / PhonePe / Paytm)</option>
                 <option value="Cash">Cash</option>
                 <option value="Bank transfer">Bank Transfer (NEFT/IMPS)</option>
                 <option value="Cheque">Cheque</option>
                 <option value="Other">Other</option>
-              </select>
+              </StyledSelect>
             </div>
           </div>
 
