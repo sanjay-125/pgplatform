@@ -78,8 +78,10 @@ export const ComplaintModal: React.FC<ComplaintModalProps> = ({ onClose, onSucce
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Category</label>
               <StyledSelect
+              <StyledSelect
                 className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500"
                 value={form.category}
+                onValueChange={(category) => setForm({ ...form, category })}
                 onValueChange={(category) => setForm({ ...form, category })}
               >
                 <option value="Electrical">Electrical</option>
@@ -89,18 +91,22 @@ export const ComplaintModal: React.FC<ComplaintModalProps> = ({ onClose, onSucce
                 <option value="Cleanliness">Cleanliness</option>
                 <option value="Other">Other</option>
               </StyledSelect>
+              </StyledSelect>
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Priority</label>
               <StyledSelect
+              <StyledSelect
                 className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500"
                 value={form.priority}
+                onValueChange={(priority) => setForm({ ...form, priority: priority as any })}
                 onValueChange={(priority) => setForm({ ...form, priority: priority as any })}
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
                 <option value="urgent">Urgent</option>
+              </StyledSelect>
               </StyledSelect>
             </div>
           </div>
