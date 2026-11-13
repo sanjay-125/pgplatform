@@ -3,10 +3,7 @@ import { X, Megaphone } from 'lucide-react';
 import { useToast } from './Toast';
 import { api } from '../services/api';
 import { StyledSelect } from './StyledSelect';
-<<<<<<< HEAD
 import { ButtonSpinner } from './LoadingStates';
-=======
->>>>>>> e90c35d845e5590f23d599c6de13089f2c663e8c
 
 interface NoticeModalProps {
   propertyId: number;
