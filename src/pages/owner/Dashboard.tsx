@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Property, FinancialSummary, ReminderTenant } from '../../types';
 import { api } from '../../services/api';
 import { StatCard } from '../../components/StatCard';
+import { DashboardSkeleton } from '../../components/LoadingStates';
 import { Users, BedDouble, IndianRupee, AlertCircle, TrendingUp, UserPlus, CreditCard, Receipt, MessageCircle } from 'lucide-react';
 
 interface DashboardProps {
@@ -53,11 +54,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   };
 
   if (loading) {
-    return (
-      <div className="p-8 text-center text-slate-500 font-semibold animate-pulse">
-        Loading property dashboard...
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   return (

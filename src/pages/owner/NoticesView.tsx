@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Property, Notice } from '../../types';
 import { api } from '../../services/api';
 import { useToast } from '../../components/Toast';
+import { NoticeCardSkeleton } from '../../components/LoadingStates';
 import { Plus, Megaphone, Calendar, AlertTriangle } from 'lucide-react';
 
 interface NoticesViewProps {
@@ -48,8 +49,10 @@ export const NoticesView: React.FC<NoticesViewProps> = ({ property, onOpenAddNot
       </div>
 
       {loading ? (
-        <div className="py-12 text-center text-slate-400 font-semibold animate-pulse text-sm">
-          Loading announcements...
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4" aria-busy="true" aria-label="Loading announcements...">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <NoticeCardSkeleton key={i} />
+          ))}
         </div>
       ) : notices.length === 0 ? (
         <div className="py-12 text-center bg-white rounded-3xl border border-slate-200 text-slate-400 font-medium text-xs">

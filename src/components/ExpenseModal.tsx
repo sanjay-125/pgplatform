@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { X, Receipt } from 'lucide-react';
 import { useToast } from './Toast';
 import { api } from '../services/api';
+import { StyledSelect } from './StyledSelect';
+import { ButtonSpinner } from './LoadingStates';
 
 interface ExpenseModalProps {
   propertyId: number;
@@ -72,23 +74,23 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ propertyId, onClose,
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4" aria-busy={loading}>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
                 Category *
               </label>
-              <select
+              <StyledSelect
                 className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500"
                 value={form.category}
-                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                onValueChange={(category) => setForm({ ...form, category })}
               >
                 {categories.map((c) => (
                   <option key={c} value={c}>
                     {c}
                   </option>
                 ))}
-              </select>
+              </StyledSelect>
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
@@ -144,7 +146,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ propertyId, onClose,
               disabled={loading}
               className="px-5 py-2 text-sm font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-xl shadow-sm transition disabled:opacity-50"
             >
-              {loading ? 'Saving...' : 'Add Expense'}
+              {loading ? <ButtonSpinner label="Saving Expense..." /> : 'Add Expense'}
             </button>
           </div>
         </form>

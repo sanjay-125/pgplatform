@@ -4,6 +4,7 @@ import { Payment } from '../../types';
 import { ReceiptModal } from '../../components/ReceiptModal';
 import { ComplaintModal } from '../../components/ComplaintModal';
 import { useToast } from '../../components/Toast';
+import { TenantPortalSkeleton, ButtonSpinner } from '../../components/LoadingStates';
 import {
   Home,
   CheckCircle2,
@@ -30,6 +31,7 @@ export const TenantPortal: React.FC = () => {
   const [showComplaintModal, setShowComplaintModal] = useState(false);
   const [showUpiModal, setShowUpiModal] = useState(false);
   const [upiRef, setUpiRef] = useState('');
+  const [submittingProof, setSubmittingProof] = useState(false);
 
   const loadTenantData = async () => {
     try {
@@ -62,9 +64,13 @@ export const TenantPortal: React.FC = () => {
       showToast('Please enter transaction reference or UTR number', 'error');
       return;
     }
-    showToast('Payment submitted for owner verification. Receipt will be generated upon approval.');
-    setShowUpiModal(false);
-    setUpiRef('');
+    setSubmittingProof(true);
+    setTimeout(() => {
+      showToast('Payment submitted for owner verification. Receipt will be generated upon approval.');
+      setShowUpiModal(false);
+      setUpiRef('');
+      setSubmittingProof(false);
+    }, 600);
   };
 
   const formatCurrency = (n: number) => {
@@ -76,11 +82,7 @@ export const TenantPortal: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-[80vh] flex items-center justify-center text-slate-500 font-semibold animate-pulse text-sm">
-        Loading your personal tenant portal...
-      </div>
-    );
+    return <TenantPortalSkeleton />;
   }
 
   if (!stay) {
@@ -393,9 +395,10 @@ export const TenantPortal: React.FC = () => {
               <button
                 type="button"
                 onClick={handleSimulatePayment}
-                className="flex-1 py-2.5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm"
+                disabled={submittingProof}
+                className="flex-1 py-2.5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm disabled:opacity-60"
               >
-                Submit Payment
+                {submittingProof ? <ButtonSpinner label="Submitting..." /> : 'Submit Payment'}
               </button>
             </div>
           </div>

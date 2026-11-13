@@ -23,6 +23,7 @@ import { PaymentModal } from './components/PaymentModal';
 import { ExpenseModal } from './components/ExpenseModal';
 import { NoticeModal } from './components/NoticeModal';
 import { ReceiptModal } from './components/ReceiptModal';
+import { AppInitSkeleton } from './components/LoadingStates';
 import { api } from './services/api';
 import { Payment, Room, Tenant } from './types';
 
@@ -78,14 +79,7 @@ export const App: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center text-white">
-        <div className="w-12 h-12 rounded-2xl bg-brand-600 flex items-center justify-center font-black text-2xl animate-bounce mb-4 shadow-xl">
-          S
-        </div>
-        <p className="text-sm font-bold text-slate-300">Initializing StayDesk...</p>
-      </div>
-    );
+    return <AppInitSkeleton />;
   }
 
   if (!token || !user) {
@@ -133,9 +127,7 @@ export const App: React.FC = () => {
           {!activeProperty ? (
             <div className="text-center py-16 bg-white rounded-3xl border border-slate-200">
               <h2 className="text-lg font-bold text-slate-800">No properties assigned</h2>
-              <p className="text-xs text-slate-500 mt-1">
-                Please contact the platform super administrator to assign a PG property.
-              </p>
+              <p className="text-xs text-slate-500 mt-1">Please contact the platform super administrator to assign a PG property.</p>
             </div>
           ) : (
             <>

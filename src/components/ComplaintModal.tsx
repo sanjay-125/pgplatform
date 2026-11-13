@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { X, Wrench } from 'lucide-react';
 import { useToast } from './Toast';
 import { api } from '../services/api';
+import { StyledSelect } from './StyledSelect';
+import { ButtonSpinner } from './LoadingStates';
 
 interface ComplaintModalProps {
   onClose: () => void;
@@ -59,7 +61,7 @@ export const ComplaintModal: React.FC<ComplaintModalProps> = ({ onClose, onSucce
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4" aria-busy={loading}>
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Issue Title *</label>
             <input
@@ -75,10 +77,10 @@ export const ComplaintModal: React.FC<ComplaintModalProps> = ({ onClose, onSucce
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Category</label>
-              <select
+              <StyledSelect
                 className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500"
                 value={form.category}
-                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                onValueChange={(category) => setForm({ ...form, category })}
               >
                 <option value="Electrical">Electrical</option>
                 <option value="Plumbing">Plumbing</option>
@@ -86,20 +88,20 @@ export const ComplaintModal: React.FC<ComplaintModalProps> = ({ onClose, onSucce
                 <option value="Carpentry / Furniture">Carpentry / Furniture</option>
                 <option value="Cleanliness">Cleanliness</option>
                 <option value="Other">Other</option>
-              </select>
+              </StyledSelect>
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Priority</label>
-              <select
+              <StyledSelect
                 className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500"
                 value={form.priority}
-                onChange={(e) => setForm({ ...form, priority: e.target.value as any })}
+                onValueChange={(priority) => setForm({ ...form, priority: priority as any })}
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
                 <option value="urgent">Urgent</option>
-              </select>
+              </StyledSelect>
             </div>
           </div>
 
@@ -128,7 +130,7 @@ export const ComplaintModal: React.FC<ComplaintModalProps> = ({ onClose, onSucce
               disabled={loading}
               className="px-5 py-2 text-sm font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-sm transition disabled:opacity-50"
             >
-              {loading ? 'Submitting...' : 'Submit Request'}
+              {loading ? <ButtonSpinner label="Submitting Request..." /> : 'Submit Request'}
             </button>
           </div>
         </form>

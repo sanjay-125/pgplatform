@@ -9,3 +9,4 @@ data/
 *.keystore
 .env
 .env.local
+.vscode/

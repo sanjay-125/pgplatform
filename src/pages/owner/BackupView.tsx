@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Property } from '../../types';
 import { api } from '../../services/api';
 import { useToast } from '../../components/Toast';
+import { ButtonSpinner } from '../../components/LoadingStates';
 import { Download, ShieldCheck, Database, HardDriveDownload } from 'lucide-react';
 
 interface BackupViewProps {
@@ -10,14 +11,18 @@ interface BackupViewProps {
 
 export const BackupView: React.FC<BackupViewProps> = ({ property }) => {
   const { showToast } = useToast();
+  const [exporting, setExporting] = useState(false);
 
   const handleExport = () => {
+    setExporting(true);
     try {
       const url = api.getBackupExportUrl(property.id);
       window.open(url, '_blank');
       showToast('Export downloaded successfully!');
     } catch (err: any) {
       showToast(err.message, 'error');
+    } finally {
+      setTimeout(() => setExporting(false), 1200);
     }
   };
 
@@ -56,10 +61,17 @@ export const BackupView: React.FC<BackupViewProps> = ({ property }) => {
         <div className="pt-2">
           <button
             onClick={handleExport}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition active:scale-95"
+            disabled={exporting}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition active:scale-95 disabled:opacity-60"
           >
-            <HardDriveDownload className="w-4 h-4" />
-            <span>Download JSON Backup Archive</span>
+            {exporting ? (
+              <ButtonSpinner label="Generating Backup Archive..." />
+            ) : (
+              <>
+                <HardDriveDownload className="w-4 h-4" />
+                <span>Download JSON Backup Archive</span>
+              </>
+            )}
           </button>
         </div>
       </div>

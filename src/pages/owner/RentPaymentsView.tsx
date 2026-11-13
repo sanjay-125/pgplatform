@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Property, Payment } from '../../types';
 import { api } from '../../services/api';
 import { useToast } from '../../components/Toast';
+import { TableSkeleton } from '../../components/LoadingStates';
 import { Plus, Search, Printer, Calendar } from 'lucide-react';
 
 interface RentPaymentsViewProps {
@@ -22,6 +23,7 @@ export const RentPaymentsView: React.FC<RentPaymentsViewProps> = ({
   const [search, setSearch] = useState('');
 
   const loadPayments = async () => {
+    setLoading(true);
     try {
       const data = await api.getPayments(property.id, period || undefined);
       setPayments(data);
@@ -117,11 +119,9 @@ export const RentPaymentsView: React.FC<RentPaymentsViewProps> = ({
       </div>
 
       {/* Payments Table */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden" aria-busy={loading}>
         {loading ? (
-          <div className="py-12 text-center text-slate-400 font-semibold animate-pulse text-sm">
-            Loading payment records...
-          </div>
+          <TableSkeleton cols={9} rows={6} className="border-0 shadow-none rounded-none" />
         ) : filtered.length === 0 ? (
           <div className="py-12 text-center text-slate-400 text-xs font-medium">
             No payments recorded for this period. Click &quot;Record New Payment&quot; to log one.

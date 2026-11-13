@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Property, Complaint } from '../../types';
 import { api } from '../../services/api';
 import { useToast } from '../../components/Toast';
+import { ComplaintCardSkeleton, InlineSpinner } from '../../components/LoadingStates';
 import { Wrench, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
 
 interface ComplaintsViewProps {
@@ -12,6 +13,7 @@ export const ComplaintsView: React.FC<ComplaintsViewProps> = ({ property }) => {
   const { showToast } = useToast();
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [loading, setLoading] = useState(true);
+  const [updatingStatusId, setUpdatingStatusId] = useState<number | null>(null);
   const [filter, setFilter] = useState<'all' | 'pending' | 'in_progress' | 'resolved'>('all');
 
   const loadComplaints = async () => {
@@ -30,12 +32,15 @@ export const ComplaintsView: React.FC<ComplaintsViewProps> = ({ property }) => {
   }, [property.id]);
 
   const handleUpdateStatus = async (id: number, status: string) => {
+    setUpdatingStatusId(id);
     try {
       await api.updateComplaintStatus(id, status);
       showToast(`Ticket status updated to ${status.replace('_', ' ')}`);
       loadComplaints();
     } catch (err: any) {
       showToast(err.message, 'error');
+    } finally {
+      setUpdatingStatusId(null);
     }
   };
 
@@ -71,8 +76,10 @@ export const ComplaintsView: React.FC<ComplaintsViewProps> = ({ property }) => {
 
       {/* Complaints List */}
       {loading ? (
-        <div className="py-12 text-center text-slate-400 font-semibold animate-pulse text-sm">
-          Loading tickets...
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4" aria-busy="true" aria-label="Loading tickets...">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <ComplaintCardSkeleton key={i} />
+          ))}
         </div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center bg-white rounded-3xl border border-slate-200 text-slate-400 font-medium text-xs">
@@ -124,17 +131,33 @@ export const ComplaintsView: React.FC<ComplaintsViewProps> = ({ property }) => {
                   {item.status !== 'in_progress' && item.status !== 'resolved' && (
                     <button
                       onClick={() => handleUpdateStatus(item.id, 'in_progress')}
-                      className="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs transition"
+                      disabled={updatingStatusId === item.id}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs transition disabled:opacity-50"
                     >
-                      Mark In Progress
+                      {updatingStatusId === item.id ? (
+                        <>
+                          <InlineSpinner size={12} className="text-blue-700" />
+                          <span>Updating...</span>
+                        </>
+                      ) : (
+                        <span>Mark In Progress</span>
+                      )}
                     </button>
                   )}
                   {item.status !== 'resolved' && (
                     <button
                       onClick={() => handleUpdateStatus(item.id, 'resolved')}
-                      className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-xs transition"
+                      disabled={updatingStatusId === item.id}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-xs transition disabled:opacity-50"
                     >
-                      Mark Resolved ✓
+                      {updatingStatusId === item.id ? (
+                        <>
+                          <InlineSpinner size={12} className="text-emerald-700" />
+                          <span>Updating...</span>
+                        </>
+                      ) : (
+                        <span>Mark Resolved ✓</span>
+                      )}
                     </button>
                   )}
                 </div>

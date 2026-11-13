@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { X, Megaphone } from 'lucide-react';
 import { useToast } from './Toast';
 import { api } from '../services/api';
+import { StyledSelect } from './StyledSelect';
+import { ButtonSpinner } from './LoadingStates';
 
 interface NoticeModalProps {
   propertyId: number;
@@ -58,7 +60,7 @@ export const NoticeModal: React.FC<NoticeModalProps> = ({ propertyId, onClose, o
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4" aria-busy={loading}>
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
               Notice Title *
@@ -75,15 +77,15 @@ export const NoticeModal: React.FC<NoticeModalProps> = ({ propertyId, onClose, o
 
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Priority</label>
-            <select
+            <StyledSelect
               className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500"
               value={form.priority}
-              onChange={(e) => setForm({ ...form, priority: e.target.value as any })}
+              onValueChange={(priority) => setForm({ ...form, priority: priority as any })}
             >
               <option value="normal">Normal Announcement</option>
               <option value="high">Important Notice</option>
               <option value="urgent">Urgent / Emergency Alert</option>
-            </select>
+            </StyledSelect>
           </div>
 
           <div>
@@ -111,7 +113,7 @@ export const NoticeModal: React.FC<NoticeModalProps> = ({ propertyId, onClose, o
               disabled={loading}
               className="px-5 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm transition disabled:opacity-50"
             >
-              {loading ? 'Publishing...' : 'Publish Notice'}
+              {loading ? <ButtonSpinner label="Publishing Notice..." /> : 'Publish Notice'}
             </button>
           </div>
         </form>

@@ -13,8 +13,8 @@ StayDesk has been completely modernized from a static prototype to a production-
 │   ├── components/         # Reusable UI components & modals (ReceiptModal, RoomModal, TenantModal, etc.)
 │   ├── context/            # Global Auth & Multi-Property Context
 │   ├── pages/
-│   │   ├── Login.tsx       # Auth screen with 1-click role switcher & credentials form
-│   │   ├── owner/          # PG Owner Management Suite (Dashboard, Rooms, Tenants, Rent, Reminders, Expenses, Complaints, Notices, Backup)
+│   │   ├── Login.tsx       # Role-based account selection, login, and signup screens
+│   │   ├── owner/          # Owner Management Suite (Dashboard, Rooms, Tenants, Rent, Reminders, Expenses, Complaints, Notices, Backup)
 │   │   ├── tenant/         # Resident Tenant Portal (My Stay, Rent status, Roommate directory with privacy consent, Receipts, Maintenance)
 │   │   └── superadmin/     # Super Admin Platform Console (Properties, Admins, Ecosystem metrics, Security audit logs)
 │   ├── services/api.ts     # Type-safe API client with JWT Bearer auth
@@ -32,8 +32,8 @@ StayDesk has been completely modernized from a static prototype to a production-
 ## Production Security & Capabilities
 
 1. **Role-Based Access Control (RBAC)**:
-   - **Super Admin**: Platform-wide metrics, manage and create properties, assign PG owners, audit log stream.
-   - **PG Owner / Admin**: Multi-property switcher (`property_id` isolation), occupancy analytics, visual room & bed matrix, tenant check-in/check-out with bed freeing, monthly rent billing ledger, partial payments, instant PDF/printable receipts, WhatsApp rent reminders, expense tracking, net cash flow, maintenance tickets, and announcements.
+   - **Super Admin**: Platform-wide metrics, manage and create properties, assign owners, audit log stream.
+   - **Owner / Admin**: Multi-property switcher (`property_id` isolation), occupancy analytics, visual room & bed matrix, tenant check-in/check-out with bed freeing, monthly rent billing ledger, partial payments, instant PDF/printable receipts, WhatsApp rent reminders, expense tracking, net cash flow, maintenance tickets, and announcements.
    - **Resident Tenant**: Personal stay summary, monthly rent status, simulated UPI QR code payment, privacy-protected roommate view (phone number strictly hidden unless sharing consent is recorded), payment ledger with receipt reprint, maintenance ticket submission, PG notices.
 
 2. **Multi-Property Isolation**:
@@ -54,11 +54,11 @@ StayDesk has been completely modernized from a static prototype to a production-
 
 | Role | Email | Password | Scope |
 |---|---|---|---|
-| **PG Owner** | `owner@staydesk.in` | `Owner@123` | Multi-PG Management (*Main Street* & *Katpadi*) |
+| **Owner** | `owner@staydesk.in` | `Owner@123` | Multi-PG Management (*Main Street* & *Katpadi*) |
 | **Resident Tenant** | `arun@staydesk.in` | `Tenant@123` | Room 101, Bed A (*Main Street PG*) |
 | **Super Admin** | `superadmin@staydesk.in` | `SuperAdmin@123` | Platform Overview & Property Creation |
 
-*(The login screen also provides convenient 1-Click Demo buttons for instant testing).*
+The public account screens use `/ownerlogin`, `/tenantlogin`, `/superadminlogin`, `/ownersignup`, and `/tenantsignup`. Signup forms currently validate in the browser only; they do not create accounts or send approval requests.
 
 ---
 

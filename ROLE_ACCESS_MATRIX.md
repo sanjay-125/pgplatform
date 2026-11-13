@@ -15,9 +15,11 @@
 | Manage platform roles/settings | No | No | Yes |
 
 ## Multi-property ownership
+
 A single Admin account can be assigned to multiple properties, for example PG 1 and PG 2. Store each property's data with a `property_id`; rooms, tenant allocations, rent payments, expenses and receipts must inherit or reference that property. Every backend query must verify the signed-in admin is assigned to that property. The property selector in the demo UI is not a security boundary.
 
 ## Production authentication requirements
+
 - Use a real identity provider or secure backend authentication.
 - Enforce roles and property membership on the server for every request.
 - Tenant portal must use the authenticated tenant ID from the server session, never a tenant ID supplied by the browser.

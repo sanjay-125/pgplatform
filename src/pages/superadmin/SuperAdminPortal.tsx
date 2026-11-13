@@ -3,6 +3,7 @@ import { api } from '../../services/api';
 import { Property, AuditLog } from '../../types';
 import { useToast } from '../../components/Toast';
 import { StatCard } from '../../components/StatCard';
+import { SuperAdminSkeleton, ButtonSpinner } from '../../components/LoadingStates';
 import {
   Building2,
   Users,
@@ -19,6 +20,7 @@ export const SuperAdminPortal: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
+  const [creatingProperty, setCreatingProperty] = useState(false);
 
   const [showAddPropertyModal, setShowAddPropertyModal] = useState(false);
   const [propForm, setPropForm] = useState({
@@ -56,6 +58,7 @@ export const SuperAdminPortal: React.FC = () => {
       return;
     }
 
+    setCreatingProperty(true);
     try {
       await api.createProperty({
         name: propForm.name.trim(),
@@ -69,15 +72,13 @@ export const SuperAdminPortal: React.FC = () => {
       loadData();
     } catch (err: any) {
       showToast(err.message, 'error');
+    } finally {
+      setCreatingProperty(false);
     }
   };
 
   if (loading) {
-    return (
-      <div className="py-12 text-center text-slate-400 font-semibold animate-pulse text-sm">
-        Loading platform administrator dashboard...
-      </div>
-    );
+    return <SuperAdminSkeleton />;
   }
 
   return (
@@ -314,9 +315,10 @@ export const SuperAdminPortal: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-sm font-bold text-white bg-purple-600 hover:bg-purple-700 rounded-xl shadow-sm transition"
+                  disabled={creatingProperty}
+                  className="px-5 py-2 text-sm font-bold text-white bg-purple-600 hover:bg-purple-700 rounded-xl shadow-sm transition disabled:opacity-50"
                 >
-                  Create Property
+                  {creatingProperty ? <ButtonSpinner label="Creating Property..." /> : 'Create Property'}
                 </button>
               </div>
             </form>

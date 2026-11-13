@@ -99,6 +99,7 @@ export interface ReminderTenant extends Tenant {
   whatsappUrl: string;
   reminderText: string;
   property_name?: string;
+  paid_amount?: number;
 }
 
 export interface Expense {

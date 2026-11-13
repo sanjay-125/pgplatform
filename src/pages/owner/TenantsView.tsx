@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Property, Tenant } from '../../types';
 import { api } from '../../services/api';
 import { useToast } from '../../components/Toast';
+import { TableSkeleton, InlineSpinner } from '../../components/LoadingStates';
 import { Search, Plus, Edit2, LogOut, RotateCcw, ShieldCheck, ShieldAlert } from 'lucide-react';
 
 interface TenantsViewProps {
@@ -18,6 +19,7 @@ export const TenantsView: React.FC<TenantsViewProps> = ({
   const { showToast } = useToast();
   const [tenants, setTenants] = useState<Tenant[]>([]);
   const [loading, setLoading] = useState(true);
+  const [actioningTenantId, setActioningTenantId] = useState<number | null>(null);
   const [statusFilter, setStatusFilter] = useState<'active' | 'checkedout' | 'all'>('active');
   const [search, setSearch] = useState('');
 
@@ -44,12 +46,15 @@ export const TenantsView: React.FC<TenantsViewProps> = ({
     ) {
       return;
     }
+    setActioningTenantId(tenant.id);
     try {
       await api.checkoutTenant(tenant.id);
       showToast(`${tenant.name} has been checked out. Bed is now available.`);
       loadTenants();
     } catch (err: any) {
       showToast(err.message, 'error');
+    } finally {
+      setActioningTenantId(null);
     }
   };
 
@@ -57,12 +62,15 @@ export const TenantsView: React.FC<TenantsViewProps> = ({
     if (!confirm(`Restore ${tenant.name} to active status? (Requires original bed to be vacant)`)) {
       return;
     }
+    setActioningTenantId(tenant.id);
     try {
       await api.restoreTenant(tenant.id);
       showToast(`${tenant.name} restored to active status!`);
       loadTenants();
     } catch (err: any) {
       showToast(err.message, 'error');
+    } finally {
+      setActioningTenantId(null);
     }
   };
 
@@ -135,11 +143,9 @@ export const TenantsView: React.FC<TenantsViewProps> = ({
       </div>
 
       {/* Tenants Table */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden" aria-busy={loading}>
         {loading ? (
-          <div className="py-12 text-center text-slate-400 font-semibold animate-pulse text-sm">
-            Loading tenant records...
-          </div>
+          <TableSkeleton cols={8} rows={6} className="border-0 shadow-none rounded-none" />
         ) : tenants.length === 0 ? (
           <div className="py-12 text-center text-slate-400 text-xs font-medium">
             No tenants found matching the selected filter.
@@ -246,18 +252,30 @@ export const TenantsView: React.FC<TenantsViewProps> = ({
                           {isActive ? (
                             <button
                               onClick={() => handleCheckout(t)}
+                              disabled={actioningTenantId === t.id}
                               title="Check Out Tenant"
-                              className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
+                              aria-label={`Check out ${t.name}`}
+                              className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition disabled:opacity-50"
                             >
-                              <LogOut className="w-3.5 h-3.5" />
+                              {actioningTenantId === t.id ? (
+                                <InlineSpinner size={14} className="text-rose-600" />
+                              ) : (
+                                <LogOut className="w-3.5 h-3.5" />
+                              )}
                             </button>
                           ) : (
                             <button
                               onClick={() => handleRestore(t)}
+                              disabled={actioningTenantId === t.id}
                               title="Restore Tenant"
-                              className="p-1.5 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition"
+                              aria-label={`Restore ${t.name}`}
+                              className="p-1.5 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition disabled:opacity-50"
                             >
-                              <RotateCcw className="w-3.5 h-3.5" />
+                              {actioningTenantId === t.id ? (
+                                <InlineSpinner size={14} className="text-emerald-600" />
+                              ) : (
+                                <RotateCcw className="w-3.5 h-3.5" />
+                              )}
                             </button>
                           )}
                         </div>

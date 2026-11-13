@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Property, ReminderTenant, Payment } from '../../types';
 import { api } from '../../services/api';
 import { useToast } from '../../components/Toast';
+import { TableSkeleton } from '../../components/LoadingStates';
 import { MessageCircle, CheckCircle2, Calendar, Printer } from 'lucide-react';
 
 interface RemindersViewProps {
@@ -17,6 +18,7 @@ export const RemindersView: React.FC<RemindersViewProps> = ({ property, onViewRe
   const [loading, setLoading] = useState(true);
 
   const loadData = async () => {
+    setLoading(true);
     try {
       const [remData, payData] = await Promise.all([
         api.getReminders(property.id, period),
@@ -72,7 +74,7 @@ export const RemindersView: React.FC<RemindersViewProps> = ({ property, onViewRe
       </div>
 
       {/* Outstanding Rent Table */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-4">
+      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-4" aria-busy={loading}>
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-base font-extrabold text-slate-900">
@@ -88,9 +90,7 @@ export const RemindersView: React.FC<RemindersViewProps> = ({ property, onViewRe
         </div>
 
         {loading ? (
-          <div className="py-8 text-center text-slate-400 font-semibold animate-pulse text-sm">
-            Calculating balances...
-          </div>
+          <TableSkeleton cols={6} rows={4} className="border-0 shadow-none rounded-none" />
         ) : pendingReminders.length === 0 ? (
           <div className="py-8 text-center rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-800 font-semibold text-xs flex items-center justify-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
@@ -146,13 +146,15 @@ export const RemindersView: React.FC<RemindersViewProps> = ({ property, onViewRe
       </div>
 
       {/* Recent Receipts List */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-4">
+      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-4" aria-busy={loading}>
         <div>
           <h2 className="text-base font-extrabold text-slate-900">Recent Payment Receipts</h2>
           <p className="text-xs text-slate-500">Quickly reprint any recently recorded rent receipt</p>
         </div>
 
-        {recentPayments.length === 0 ? (
+        {loading ? (
+          <TableSkeleton cols={6} rows={3} className="border-0 shadow-none rounded-none" />
+        ) : recentPayments.length === 0 ? (
           <div className="py-8 text-center text-slate-400 text-xs font-medium">
             No receipts generated yet.
           </div>

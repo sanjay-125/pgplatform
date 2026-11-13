@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Property, Expense, FinancialSummary } from '../../types';
 import { api } from '../../services/api';
 import { useToast } from '../../components/Toast';
+import { TableSkeleton, StatCardSkeleton, InlineSpinner } from '../../components/LoadingStates';
 import { Plus, Trash2, Calendar, TrendingUp, IndianRupee, AlertCircle } from 'lucide-react';
 
 interface ExpensesReportsViewProps {
@@ -18,8 +19,10 @@ export const ExpensesReportsView: React.FC<ExpensesReportsViewProps> = ({
   const [summary, setSummary] = useState<FinancialSummary | null>(null);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deletingExpenseId, setDeletingExpenseId] = useState<number | null>(null);
 
   const loadData = async () => {
+    setLoading(true);
     try {
       const [sumData, expData] = await Promise.all([
         api.getSummary(property.id, period),
@@ -40,12 +43,15 @@ export const ExpensesReportsView: React.FC<ExpensesReportsViewProps> = ({
 
   const handleDeleteExpense = async (id: number, category: string) => {
     if (!confirm(`Delete this ${category} expense?`)) return;
+    setDeletingExpenseId(id);
     try {
       await api.deleteExpense(id);
       showToast('Expense record deleted');
       loadData();
     } catch (err: any) {
       showToast(err.message, 'error');
+    } finally {
+      setDeletingExpenseId(null);
     }
   };
 
@@ -91,50 +97,61 @@ export const ExpensesReportsView: React.FC<ExpensesReportsViewProps> = ({
       </div>
 
       {/* Cash Flow Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-            Rent Income
-          </span>
-          <span className="text-2xl font-black text-emerald-600 mt-2 block">
-            {formatCurrency(summary?.collectedRent || 0)}
-          </span>
-          <span className="text-xs text-slate-500 mt-1 block">Expected: {formatCurrency(summary?.expectedRent || 0)}</span>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" aria-busy={loading}>
+        {loading ? (
+          <>
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+          </>
+        ) : (
+          <>
+            <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                Rent Income
+              </span>
+              <span className="text-2xl font-black text-emerald-600 mt-2 block">
+                {formatCurrency(summary?.collectedRent || 0)}
+              </span>
+              <span className="text-xs text-slate-500 mt-1 block">Expected: {formatCurrency(summary?.expectedRent || 0)}</span>
+            </div>
 
-        <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-            Operating Expenses
-          </span>
-          <span className="text-2xl font-black text-amber-600 mt-2 block">
-            {formatCurrency(summary?.totalExpenses || 0)}
-          </span>
-          <span className="text-xs text-slate-500 mt-1 block">{expenses.length} bills recorded</span>
-        </div>
+            <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                Operating Expenses
+              </span>
+              <span className="text-2xl font-black text-amber-600 mt-2 block">
+                {formatCurrency(summary?.totalExpenses || 0)}
+              </span>
+              <span className="text-xs text-slate-500 mt-1 block">{expenses.length} bills recorded</span>
+            </div>
 
-        <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-            Net Cash Flow
-          </span>
-          <span
-            className={`text-2xl font-black mt-2 block ${
-              (summary?.netCashFlow || 0) >= 0 ? 'text-emerald-700' : 'text-rose-600'
-            }`}
-          >
-            {formatCurrency(summary?.netCashFlow || 0)}
-          </span>
-          <span className="text-xs text-slate-500 mt-1 block">Rent minus operating costs</span>
-        </div>
+            <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                Net Cash Flow
+              </span>
+              <span
+                className={`text-2xl font-black mt-2 block ${
+                  (summary?.netCashFlow || 0) >= 0 ? 'text-emerald-700' : 'text-rose-600'
+                }`}
+              >
+                {formatCurrency(summary?.netCashFlow || 0)}
+              </span>
+              <span className="text-xs text-slate-500 mt-1 block">Rent minus operating costs</span>
+            </div>
 
-        <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-            Outstanding Rent
-          </span>
-          <span className="text-2xl font-black text-rose-600 mt-2 block">
-            {formatCurrency(summary?.outstandingRent || 0)}
-          </span>
-          <span className="text-xs text-slate-500 mt-1 block">Uncollected for {period}</span>
-        </div>
+            <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                Outstanding Rent
+              </span>
+              <span className="text-2xl font-black text-rose-600 mt-2 block">
+                {formatCurrency(summary?.outstandingRent || 0)}
+              </span>
+              <span className="text-xs text-slate-500 mt-1 block">Uncollected for {period}</span>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Category Breakdown */}
@@ -155,7 +172,7 @@ export const ExpensesReportsView: React.FC<ExpensesReportsViewProps> = ({
       )}
 
       {/* Expense History Table */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden p-6 space-y-4">
+      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden p-6 space-y-4" aria-busy={loading}>
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-base font-extrabold text-slate-900">Recorded Expenses</h2>
@@ -164,9 +181,7 @@ export const ExpensesReportsView: React.FC<ExpensesReportsViewProps> = ({
         </div>
 
         {loading ? (
-          <div className="py-8 text-center text-slate-400 font-semibold animate-pulse text-sm">
-            Loading expenses...
-          </div>
+          <TableSkeleton cols={5} rows={4} className="border-0 shadow-none rounded-none" />
         ) : expenses.length === 0 ? (
           <div className="py-8 text-center text-slate-400 text-xs font-medium">
             No expenses recorded for this month. Click &quot;Add Expense&quot; to log your bills.
@@ -197,10 +212,16 @@ export const ExpensesReportsView: React.FC<ExpensesReportsViewProps> = ({
                     <td className="py-3.5 px-3 text-right">
                       <button
                         onClick={() => handleDeleteExpense(e.id, e.category)}
+                        disabled={deletingExpenseId === e.id}
                         title="Delete Expense"
-                        className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition"
+                        aria-label={`Delete ${e.category} expense`}
+                        className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition disabled:opacity-50"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        {deletingExpenseId === e.id ? (
+                          <InlineSpinner size={16} className="text-rose-600" />
+                        ) : (
+                          <Trash2 className="w-4 h-4" />
+                        )}
                       </button>
                     </td>
                   </tr>

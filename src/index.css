@@ -9,6 +9,45 @@
   }
 }
 
+/* Use the app's password visibility toggle instead of Edge's native reveal button. */
+.auth-password-input::-ms-reveal,
+.auth-password-input::-ms-clear {
+  display: none;
+}
+
+/* Keep native form values and the custom dropdown trigger on the app font. */
+select {
+  color-scheme: light;
+  accent-color: #254fe8;
+  font-family: inherit;
+}
+
+.styled-select-trigger {
+  font-family: inherit;
+  border-radius: 0.75rem;
+}
+
+.styled-select-trigger:focus-visible {
+  outline: 2px solid #254fe8;
+  outline-offset: 2px;
+}
+
+.styled-select-trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.input-format-invalid {
+  border-color: #e11d48 !important;
+  background-color: #fff1f2 !important;
+}
+
+.input-format-invalid:focus,
+.input-format-invalid:focus-within {
+  border-color: #e11d48 !important;
+  box-shadow: 0 0 0 4px rgb(225 29 72 / 12%) !important;
+}
+
 /* Print styles for payment receipts */
 @media print {
   body * {

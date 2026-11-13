@@ -8,7 +8,7 @@ interface AuthContextType {
   properties: Property[];
   activeProperty: Property | null;
   loading: boolean;
-  login: (email: string, pass: string) => Promise<void>;
+  login: (email: string, pass: string, expectedRole?: User['role']) => Promise<void>;
   logout: () => void;
   switchProperty: (propId: number) => void;
   refreshProperties: () => Promise<void>;
@@ -48,10 +48,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [token]);
 
-  const login = async (email: string, pass: string) => {
+  const login = async (email: string, pass: string, expectedRole?: User['role']) => {
     setLoading(true);
     try {
       const { token: newToken, user: newUser } = await api.login(email, pass);
+      if (expectedRole && newUser.role !== expectedRole) {
+        const roleName = newUser.role === 'superadmin' ? 'Super Admin' : newUser.role === 'owner' ? 'Owner' : 'Tenant';
+        throw new Error('This account is registered as a ' + roleName + '. Please use the matching login page.');
+      }
       localStorage.setItem('staydesk_token', newToken);
       setToken(newToken);
       setUser(newUser);

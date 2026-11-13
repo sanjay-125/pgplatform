@@ -3,6 +3,9 @@ import { X, UserPlus, UserCheck } from 'lucide-react';
 import { useToast } from './Toast';
 import { api } from '../services/api';
 import { Room, Tenant } from '../types';
+import { EMAIL_PATTERN, isValidEmail, isValidIndianPhone } from '../utils/validation';
+import { StyledSelect } from './StyledSelect';
+import { ButtonSpinner } from './LoadingStates';
 
 interface TenantModalProps {
   propertyId: number;
@@ -23,6 +26,9 @@ export const TenantModal: React.FC<TenantModalProps> = ({
 }) => {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [phoneFormatInvalid, setPhoneFormatInvalid] = useState(false);
+  const [emailFormatInvalid, setEmailFormatInvalid] = useState(false);
+  const [emergencyPhoneFormatInvalid, setEmergencyPhoneFormatInvalid] = useState(false);
 
   const initialRoom = presetRoomId || editingTenant?.room_id || rooms[0]?.id || 0;
   const [selectedRoomId, setSelectedRoomId] = useState<number>(initialRoom);
@@ -57,7 +63,7 @@ export const TenantModal: React.FC<TenantModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name.trim() || !form.phone.trim()) {
-      showToast('Name and phone number are required', 'error');
+      showToast('Name and Contact Number are required', 'error');
       return;
     }
 
@@ -127,12 +133,12 @@ export const TenantModal: React.FC<TenantModalProps> = ({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto" aria-busy={loading}>
           {/* Personal Info */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                Full Name *
+                Name *
               </label>
               <input
                 type="text"
@@ -145,15 +151,26 @@ export const TenantModal: React.FC<TenantModalProps> = ({
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                Phone Number *
+                Contact Number *
               </label>
               <input
                 type="tel"
                 required
-                placeholder="10-digit mobile number"
-                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500"
+                inputMode="numeric"
+                pattern="[6-9][0-9]{9}"
+                maxLength={10}
+                title="Enter a valid 10-digit Indian contact number."
+                placeholder="10-digit contact number"
+                aria-invalid={phoneFormatInvalid || undefined}
+                onBlur={(e) => setPhoneFormatInvalid(Boolean(e.currentTarget.value) && !isValidIndianPhone(e.currentTarget.value))}
+                className={"w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500" + (phoneFormatInvalid ? ' input-format-invalid' : '')}
                 value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                onChange={(e) => {
+                  setForm({ ...form, phone: e.target.value });
+                  if (phoneFormatInvalid) {
+                    setPhoneFormatInvalid(Boolean(e.currentTarget.value) && !isValidIndianPhone(e.currentTarget.value));
+                  }
+                }}
               />
             </div>
           </div>
@@ -161,14 +178,22 @@ export const TenantModal: React.FC<TenantModalProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                Email Address (Optional)
+                Email (Optional)
               </label>
               <input
                 type="email"
+                pattern={EMAIL_PATTERN}
                 placeholder="tenant@example.com"
-                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500"
+                aria-invalid={emailFormatInvalid || undefined}
+                onBlur={(e) => setEmailFormatInvalid(Boolean(e.currentTarget.value) && !isValidEmail(e.currentTarget.value))}
+                className={"w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500" + (emailFormatInvalid ? ' input-format-invalid' : '')}
                 value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                onChange={(e) => {
+                  setForm({ ...form, email: e.target.value });
+                  if (emailFormatInvalid) {
+                    setEmailFormatInvalid(Boolean(e.currentTarget.value) && !isValidEmail(e.currentTarget.value));
+                  }
+                }}
               />
             </div>
             <div>
@@ -192,11 +217,11 @@ export const TenantModal: React.FC<TenantModalProps> = ({
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
                   Select Room *
                 </label>
-                <select
+                <StyledSelect
                   className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500"
                   value={selectedRoomId}
-                  onChange={(e) => {
-                    const rId = Number(e.target.value);
+                  onValueChange={(selectedRoom) => {
+                    const rId = Number(selectedRoom);
                     setSelectedRoomId(rId);
                     const rm = rooms.find((r) => r.id === rId);
                     if (rm?.rent_per_bed) {
@@ -209,16 +234,16 @@ export const TenantModal: React.FC<TenantModalProps> = ({
                       Room {r.room_number} ({r.vacant} vacant of {r.capacity} beds)
                     </option>
                   ))}
-                </select>
+                </StyledSelect>
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
                   Select Available Bed *
                 </label>
-                <select
+                <StyledSelect
                   className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500"
                   value={form.bedId}
-                  onChange={(e) => setForm({ ...form, bedId: Number(e.target.value) })}
+                  onValueChange={(bedId) => setForm({ ...form, bedId: Number(bedId) })}
                 >
                   {availableBeds.length === 0 ? (
                     <option value="0">No vacant beds in this room</option>
@@ -229,7 +254,7 @@ export const TenantModal: React.FC<TenantModalProps> = ({
                       </option>
                     ))
                   )}
-                </select>
+                </StyledSelect>
               </div>
             </div>
           )}
@@ -271,10 +296,10 @@ export const TenantModal: React.FC<TenantModalProps> = ({
               <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
                 ID Proof Type
               </label>
-              <select
+              <StyledSelect
                 className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500"
                 value={form.idType}
-                onChange={(e) => setForm({ ...form, idType: e.target.value })}
+                onValueChange={(idType) => setForm({ ...form, idType })}
               >
                 <option value="Aadhaar (last 4 only)">Aadhaar (last 4 only)</option>
                 <option value="Passport">Passport</option>
@@ -282,7 +307,7 @@ export const TenantModal: React.FC<TenantModalProps> = ({
                 <option value="Voter ID">Voter ID</option>
                 <option value="College / Work ID">College / Work ID</option>
                 <option value="Not recorded">Not recorded</option>
-              </select>
+              </StyledSelect>
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
@@ -317,10 +342,21 @@ export const TenantModal: React.FC<TenantModalProps> = ({
               </label>
               <input
                 type="tel"
+                inputMode="numeric"
+                pattern="[6-9][0-9]{9}"
+                maxLength={10}
+                title="Enter a valid 10-digit Indian contact number."
                 placeholder="Emergency phone number"
-                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500"
+                aria-invalid={emergencyPhoneFormatInvalid || undefined}
+                onBlur={(e) => setEmergencyPhoneFormatInvalid(Boolean(e.currentTarget.value) && !isValidIndianPhone(e.currentTarget.value))}
+                className={"w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500" + (emergencyPhoneFormatInvalid ? ' input-format-invalid' : '')}
                 value={form.emergencyPhone}
-                onChange={(e) => setForm({ ...form, emergencyPhone: e.target.value })}
+                onChange={(e) => {
+                  setForm({ ...form, emergencyPhone: e.target.value });
+                  if (emergencyPhoneFormatInvalid) {
+                    setEmergencyPhoneFormatInvalid(Boolean(e.currentTarget.value) && !isValidIndianPhone(e.currentTarget.value));
+                  }
+                }}
               />
             </div>
           </div>
@@ -367,7 +403,13 @@ export const TenantModal: React.FC<TenantModalProps> = ({
               disabled={loading}
               className="px-5 py-2 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-sm transition disabled:opacity-50"
             >
-              {loading ? 'Saving...' : editingTenant ? 'Update Tenant' : 'Complete Check-In'}
+              {loading ? (
+                <ButtonSpinner label={editingTenant ? 'Updating Tenant...' : 'Checking In...'} />
+              ) : editingTenant ? (
+                'Update Tenant'
+              ) : (
+                'Complete Check-In'
+              )}
             </button>
           </div>
         </form>

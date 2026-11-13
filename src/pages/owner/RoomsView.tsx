@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Property, Room } from '../../types';
 import { api } from '../../services/api';
+import { StyledSelect } from '../../components/StyledSelect';
 import { useToast } from '../../components/Toast';
+import { RoomsGridSkeleton, InlineSpinner } from '../../components/LoadingStates';
 import { Plus, Search, Trash2, UserPlus, CheckCircle2 } from 'lucide-react';
 
 interface RoomsViewProps {
@@ -14,6 +16,7 @@ export const RoomsView: React.FC<RoomsViewProps> = ({ property, onOpenAddRoom, o
   const { showToast } = useToast();
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deletingRoomId, setDeletingRoomId] = useState<number | null>(null);
   const [search, setSearch] = useState('');
   const [filterVacancy, setFilterVacancy] = useState<'all' | 'vacant' | 'full'>('all');
 
@@ -36,12 +39,15 @@ export const RoomsView: React.FC<RoomsViewProps> = ({ property, onOpenAddRoom, o
     if (!confirm(`Are you sure you want to delete Room ${roomNumber}? This will remove all beds in this room.`)) {
       return;
     }
+    setDeletingRoomId(roomId);
     try {
       await api.deleteRoom(roomId);
       showToast(`Room ${roomNumber} deleted successfully`);
       loadRooms();
     } catch (err: any) {
       showToast(err.message, 'error');
+    } finally {
+      setDeletingRoomId(null);
     }
   };
 
@@ -87,22 +93,20 @@ export const RoomsView: React.FC<RoomsViewProps> = ({ property, onOpenAddRoom, o
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <select
+        <StyledSelect
           className="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
           value={filterVacancy}
-          onChange={(e) => setFilterVacancy(e.target.value as any)}
+          onValueChange={(filter) => setFilterVacancy(filter as any)}
         >
           <option value="all">All Rooms ({rooms.length})</option>
           <option value="vacant">Has Vacancy</option>
           <option value="full">Full Occupancy</option>
-        </select>
+        </StyledSelect>
       </div>
 
       {/* Room Grid */}
       {loading ? (
-        <div className="py-12 text-center text-slate-400 font-semibold animate-pulse text-sm">
-          Loading rooms and bed status...
-        </div>
+        <RoomsGridSkeleton />
       ) : filteredRooms.length === 0 ? (
         <div className="py-12 text-center bg-white rounded-3xl border border-slate-200 text-slate-400 font-medium text-xs">
           No rooms match the current search or filters. Click &quot;Add New Room&quot; to create one.
@@ -207,10 +211,16 @@ export const RoomsView: React.FC<RoomsViewProps> = ({ property, onOpenAddRoom, o
                   )}
                   <button
                     onClick={() => handleDeleteRoom(room.id, room.room_number)}
+                    disabled={deletingRoomId === room.id}
                     title="Delete Room"
-                    className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition"
+                    aria-label={`Delete Room ${room.room_number}`}
+                    className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition disabled:opacity-50"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    {deletingRoomId === room.id ? (
+                      <InlineSpinner size={14} className="text-rose-600" />
+                    ) : (
+                      <Trash2 className="w-3.5 h-3.5" />
+                    )}
                   </button>
                 </div>
               </div>
