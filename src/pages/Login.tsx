@@ -22,6 +22,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/Toast';
 import { StyledSelect } from '../components/StyledSelect';
 import { ButtonSpinner } from '../components/LoadingStates';
+import { BrandLogo } from '../components/BrandLogo';
 import type { UserRole } from '../types';
 import { EMAIL_PATTERN, isValidEmail, isValidIndianPhone } from '../utils/validation';
 
@@ -81,14 +82,35 @@ const roleDetails: Record<PublicRole, {
 function AuthShell({
   children,
   width = 'max-w-4xl',
+  navigate,
 }: {
   children: React.ReactNode;
   width?: string;
+  navigate?: (path: string) => void;
 }) {
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-brand-950 px-4 py-2 text-white selection:bg-brand-500 selection:text-white sm:px-6 sm:py-2">
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-brand-950 px-4 py-2.5 text-white selection:bg-brand-500 selection:text-white sm:px-6 sm:py-3">
       <div aria-hidden="true" className="pointer-events-none absolute -right-32 -top-40 h-96 w-96 rounded-full bg-brand-600/15 blur-3xl" />
       <div aria-hidden="true" className="pointer-events-none absolute -bottom-48 -left-36 h-96 w-96 rounded-full bg-brand-400/10 blur-3xl" />
+
+      {/* Top constant StayDesk Brand Header for all login views on mobile & laptop */}
+      <header className="relative z-10 mx-auto w-full max-w-6xl py-2 flex items-center justify-between">
+        <a
+          href="/"
+          onClick={(e) => {
+            if (navigate) {
+              navigateLink(e, navigate, '/');
+            }
+          }}
+          className="inline-flex items-center gap-2.5 group transition select-none"
+        >
+          <BrandLogo
+            iconClassName="w-8 h-8 sm:w-9 sm:h-9 rounded-xl object-contain shadow-md shrink-0 transition group-hover:scale-105"
+            textClassName="font-extrabold text-white tracking-tight text-lg sm:text-xl"
+          />
+        </a>
+      </header>
+
       <main className={'relative z-10 mx-auto flex w-full flex-1 flex-col justify-center py-1 sm:py-1 ' + width}>
         {children}
       </main>
@@ -148,7 +170,7 @@ function RoleCard({
 
 function LandingPage({ navigate }: { navigate: (path: string) => void }) {
   return (
-    <AuthShell width="max-w-6xl">
+    <AuthShell width="max-w-6xl" navigate={navigate}>
       <div className="mx-auto mb-4 max-w-2xl text-center sm:mb-5">
         <h1 className="text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl">
           Welcome to StayDesk
@@ -648,15 +670,15 @@ function LoginForm({
   };
 
   return (
-    <AuthShell width="max-w-md">
+    <AuthShell width="max-w-md" navigate={navigate}>
       <div className="mb-4"><BackToAccounts navigate={navigate} /></div>
-      <section aria-labelledby="login-heading" className="rounded-3xl bg-white p-4 text-slate-900 shadow-2xl shadow-slate-950/30 sm:p-4">
+      <section aria-labelledby="login-heading" className="rounded-3xl bg-white p-4 text-slate-900 shadow-2xl shadow-slate-950/30 sm:p-5">
         <div className="mb-3 flex items-start gap-3">
           <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
             <Icon className="h-5 w-5" aria-hidden="true" />
           </div>
           <div className="min-w-0 pt-0.5">
-            <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-brand-700">{detail.title} account</p>
+            <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-brand-700">StayDesk · {detail.title} portal</p>
             <h1 id="login-heading" className="mt-1 text-xl font-extrabold tracking-tight sm:text-2xl">{detail.loginTitle}</h1>
             <p className="mt-1 text-xs leading-relaxed text-slate-500">{detail.description}</p>
           </div>
@@ -1030,7 +1052,7 @@ function SignupPage({
   };
 
   return (
-    <AuthShell width="max-w-3xl">
+    <AuthShell width="max-w-3xl" navigate={navigate}>
       <div className="mb-4"><BackToAccounts navigate={navigate} /></div>
       <section aria-labelledby="signup-heading" className="overflow-hidden rounded-3xl bg-white text-slate-900 shadow-2xl shadow-slate-950/30">
         <div className="border-b border-slate-100 bg-slate-50/80 px-5 pb-3 pt-5 sm:px-8 sm:pb-4 sm:pt-6">
@@ -1040,7 +1062,7 @@ function SignupPage({
             </div>
             <div className="min-w-0">
               <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-brand-700">
-                {isSuperAdmin ? 'Super Admin registration' : isAdmin ? 'Admin registration' : 'Tenant registration'}
+                StayDesk · {isSuperAdmin ? 'Super Admin' : isAdmin ? 'Admin' : 'Tenant'} registration
               </p>
               <h1 id="signup-heading" className="mt-1 text-xl font-extrabold tracking-tight sm:text-2xl">{title}</h1>
               <p className="mt-1 text-xs leading-relaxed text-slate-500">

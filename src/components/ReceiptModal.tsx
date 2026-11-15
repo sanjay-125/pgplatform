@@ -1,6 +1,8 @@
 import React from 'react';
 import { Payment } from '../types';
 import { Printer, X, CheckCircle2 } from 'lucide-react';
+import { formatIndianDate, formatRentPeriod } from '../utils/validation';
+import { BrandLogo } from './BrandLogo';
 
 interface ReceiptModalProps {
   payment: Payment | null;
@@ -46,15 +48,12 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ payment, onClose }) 
           {/* Header */}
           <div className="flex justify-between items-start border-b-2 border-brand-600 pb-5">
             <div>
-              <div className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-extrabold text-lg shadow-sm">
-                  S
-                </div>
-                <div>
-                  <h1 className="text-xl font-extrabold tracking-tight text-slate-900">StayDesk</h1>
-                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">PG & Hostel Management</p>
-                </div>
-              </div>
+              <BrandLogo
+                iconClassName="w-9 h-9 rounded-xl object-contain shadow-xs shrink-0"
+                textClassName="text-xl font-extrabold tracking-tight text-slate-900 block"
+                subtitle="PG & Hostel Management"
+                subtitleClassName="text-xs font-semibold text-slate-500 uppercase tracking-wider block"
+              />
               <p className="text-xs text-slate-600 mt-2 font-medium">
                 {payment.property_name || 'StayDesk PG Platform'}
               </p>
@@ -63,7 +62,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ payment, onClose }) 
               <span className="inline-block px-2.5 py-1 bg-brand-50 text-brand-700 font-bold text-xs rounded-md border border-brand-200">
                 {payment.receipt_no}
               </span>
-              <p className="text-xs text-slate-500 mt-1.5">Date: <strong className="text-slate-800">{payment.date}</strong></p>
+              <p className="text-xs text-slate-500 mt-1.5">Date: <strong className="text-slate-800">{formatIndianDate(payment.date)}</strong></p>
             </div>
           </div>
 
@@ -79,7 +78,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ payment, onClose }) 
             </div>
             <div className="flex justify-between pb-2 border-b border-slate-200">
               <span className="text-slate-500">Rent Period:</span>
-              <span className="font-semibold text-slate-800">{payment.period}</span>
+              <span className="font-semibold text-slate-800">{formatRentPeriod(payment.period)}</span>
             </div>
             <div className="flex justify-between pb-2 border-b border-slate-200">
               <span className="text-slate-500">Payment Mode:</span>

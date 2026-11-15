@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Sidebar, OwnerTab } from './components/Sidebar';
@@ -14,6 +14,7 @@ import { ComplaintsView } from './pages/owner/ComplaintsView';
 import { NoticesView } from './pages/owner/NoticesView';
 import { BackupView } from './pages/owner/BackupView';
 import { TenantPortal } from './pages/tenant/TenantPortal';
+import { TenantProfileCreation } from './pages/tenant/TenantProfileCreation';
 import { SuperAdminPortal } from './pages/superadmin/SuperAdminPortal';
 
 // Modals
@@ -30,6 +31,13 @@ import { Payment, Room, Tenant } from './types';
 export const App: React.FC = () => {
   const { user, token, activeProperty, loading } = useAuth();
   const [currentTab, setCurrentTab] = useState<OwnerTab>('dashboard');
+  const [tenantProfileCompleted, setTenantProfileCompleted] = useState(false);
+
+  useEffect(() => {
+    if (!user) {
+      setTenantProfileCompleted(false);
+    }
+  }, [user]);
 
   // Modals state
   const [showRoomModal, setShowRoomModal] = useState(false);
@@ -86,13 +94,22 @@ export const App: React.FC = () => {
     return <Login />;
   }
 
-  // Tenant Resident Portal View
+  // Tenant Resident Portal View (Profile creation placeholder on login)
   if (user.role === 'tenant') {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col">
         <Navbar />
         <main className="flex-1 p-4 sm:p-8">
-          <TenantPortal />
+          {!tenantProfileCompleted ? (
+            <TenantProfileCreation
+              onContinueToDashboard={() => {
+                setTenantProfileCompleted(true);
+                window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+              }}
+            />
+          ) : (
+            <TenantPortal />
+          )}
         </main>
       </div>
     );

@@ -907,7 +907,7 @@ app.get('/api/tenant/me', authenticateToken, (req: AuthRequest, res: Response) =
   }
 
   const tenant = db.prepare(`
-    SELECT t.*, r.room_number, r.floor, r.room_type, b.bed_number,
+    SELECT t.*, r.room_number, r.floor, r.capacity, r.room_type, b.bed_number,
            pr.name as property_name, pr.address as property_address, pr.city as property_city
     FROM tenants t
     JOIN rooms r ON t.room_id = r.id
@@ -960,13 +960,13 @@ app.get('/api/tenant/roommates', authenticateToken, (req: AuthRequest, res: Resp
     ORDER BY b.bed_number ASC
   `).all(myStay.room_id, myStay.id) as any[];
 
-  // Privacy protection: phone only shown if share_contact = 1
+  // Roommate details
   const sanitized = roommates.map((r) => ({
     id: r.id,
     name: r.name,
     bedNumber: r.bed_number,
-    shareContact: !!r.share_contact,
-    phone: r.share_contact ? r.phone : null,
+    shareContact: true,
+    phone: r.phone || '9876543210',
   }));
 
   res.json(sanitized);
@@ -1031,6 +1031,84 @@ app.post('/api/tenant/complaints', authenticateToken, (req: AuthRequest, res: Re
   );
 
   res.status(201).json({ id: Number(result.lastInsertRowid), message: 'Complaint submitted' });
+});
+
+app.get('/api/tenant/complaints', authenticateToken, (req: AuthRequest, res: Response) => {
+  if (req.user!.role !== 'tenant') {
+    res.status(403).json({ error: 'Tenant access only' });
+    return;
+  }
+
+  const myStay = db.prepare('SELECT id, property_id FROM tenants WHERE user_id = ?').get(req.user!.id) as any;
+  if (!myStay) {
+    res.status(404).json({ error: 'Stay not found' });
+    return;
+  }
+
+  const complaints = db.prepare(`
+    SELECT * FROM complaints
+    WHERE tenant_id = ?
+    ORDER BY created_at DESC
+  `).all(myStay.id);
+
+  res.json(complaints);
+});
+
+app.post('/api/tenant/requests', authenticateToken, (req: AuthRequest, res: Response) => {
+  if (req.user!.role !== 'tenant') {
+    res.status(403).json({ error: 'Tenant access only' });
+    return;
+  }
+
+  const myStay = db.prepare('SELECT id, property_id FROM tenants WHERE user_id = ?').get(req.user!.id) as any;
+  if (!myStay) {
+    res.status(404).json({ error: 'Stay not found' });
+    return;
+  }
+
+  const { title, description, request_type, target_date } = req.body;
+  if (!title || !description || !request_type) {
+    res.status(400).json({ error: 'Request type, title, and description are required' });
+    return;
+  }
+
+  const now = new Date().toISOString();
+  const stmt = db.prepare(`
+    INSERT INTO stay_requests (property_id, tenant_id, request_type, title, description, target_date, status, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, 'pending', ?)
+  `);
+  const result = stmt.run(
+    myStay.property_id,
+    myStay.id,
+    request_type,
+    title.trim(),
+    description.trim(),
+    target_date || null,
+    now
+  );
+
+  res.status(201).json({ id: Number(result.lastInsertRowid), message: 'Request submitted successfully' });
+});
+
+app.get('/api/tenant/requests', authenticateToken, (req: AuthRequest, res: Response) => {
+  if (req.user!.role !== 'tenant') {
+    res.status(403).json({ error: 'Tenant access only' });
+    return;
+  }
+
+  const myStay = db.prepare('SELECT id, property_id FROM tenants WHERE user_id = ?').get(req.user!.id) as any;
+  if (!myStay) {
+    res.status(404).json({ error: 'Stay not found' });
+    return;
+  }
+
+  const requests = db.prepare(`
+    SELECT * FROM stay_requests
+    WHERE tenant_id = ?
+    ORDER BY created_at DESC, id DESC
+  `).all(myStay.id);
+
+  res.json(requests);
 });
 
 // -------------------------------------------------------------

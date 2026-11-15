@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrandLogo } from './BrandLogo';
 import {
   LayoutDashboard,
   Grid,
@@ -46,15 +47,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange, prope
     <aside className="hidden md:flex flex-col w-64 bg-slate-900 text-slate-300 border-r border-slate-800 shrink-0 select-none">
       {/* Brand Header */}
       <div className="h-16 flex items-center gap-3 px-6 border-b border-slate-800">
-        <div className="w-9 h-9 rounded-xl bg-brand-500 flex items-center justify-center text-white font-extrabold text-lg shadow-sm">
-          S
-        </div>
-        <div>
-          <span className="font-extrabold text-white tracking-tight text-base block">StayDesk</span>
-          <span className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase block">
-            PG Management
-          </span>
-        </div>
+        <BrandLogo
+          iconClassName="w-9 h-9 rounded-xl object-contain shadow-xs shrink-0"
+          textClassName="font-extrabold text-white tracking-tight text-base block"
+          subtitle="PG Management"
+        />
       </div>
 
       {/* Property banner */}

@@ -153,6 +153,24 @@ export interface Notice {
   created_at: string;
 }
 
+export type StayRequestType = 'Bed Change' | 'Room Change' | 'Visitor' | 'Move Out';
+export type StayRequestStatus = 'pending' | 'in_progress' | 'approved' | 'rejected' | 'completed';
+
+export interface StayRequest {
+  id: number;
+  property_id?: number;
+  tenant_id?: number;
+  tenant_name?: string;
+  request_type: StayRequestType;
+  title: string;
+  description: string;
+  target_date?: string;
+  status: StayRequestStatus;
+  admin_remark?: string;
+  created_at: string;
+  updated_at?: string;
+}
+
 export interface AuditLog {
   id: number;
   user_id?: number;

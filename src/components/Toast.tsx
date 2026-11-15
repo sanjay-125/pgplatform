@@ -61,9 +61,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               className={`mx-auto flex h-14 w-14 items-center justify-center rounded-2xl mb-4 border ${
                 activeToast.type === 'error'
                   ? 'bg-rose-50 border-rose-200 text-rose-600'
-                  : activeToast.type === 'info'
-                  ? 'bg-brand-50 border-brand-200 text-brand-600'
-                  : 'bg-emerald-50 border-emerald-200 text-emerald-600'
+                  : 'bg-brand-50 border-brand-200 text-brand-600'
               }`}
             >
               {activeToast.type === 'error' ? (
@@ -98,9 +96,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 className={`w-full py-2.5 px-5 rounded-xl font-bold text-xs text-white shadow-md transition active:scale-[0.99] focus-visible:outline-none focus-visible:ring-4 ${
                   activeToast.type === 'error'
                     ? 'bg-rose-600 hover:bg-rose-700 shadow-rose-600/20 focus-visible:ring-rose-500/30'
-                    : activeToast.type === 'info'
-                    ? 'bg-brand-600 hover:bg-brand-700 shadow-brand-600/20 focus-visible:ring-brand-500/30'
-                    : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20 focus-visible:ring-emerald-500/30'
+                    : 'bg-brand-600 hover:bg-brand-700 shadow-brand-600/20 focus-visible:ring-brand-500/30'
                 }`}
               >
                 {activeToast.buttonLabel ||

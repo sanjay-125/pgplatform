@@ -10,6 +10,7 @@ import {
   Complaint,
   Notice,
   AuditLog,
+  StayRequest,
 } from '../types';
 
 const API_BASE = '/api';
@@ -272,6 +273,34 @@ export const api = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
       body: JSON.stringify(data),
+    });
+    return handleResponse(res);
+  },
+
+  async getTenantComplaints(): Promise<Complaint[]> {
+    const res = await fetch(`${API_BASE}/tenant/complaints`, {
+      headers: getAuthHeader(),
+    });
+    return handleResponse(res);
+  },
+
+  async submitTenantStayRequest(data: {
+    request_type: string;
+    title: string;
+    description: string;
+    target_date?: string;
+  }): Promise<{ id: number; message: string }> {
+    const res = await fetch(`${API_BASE}/tenant/requests`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+      body: JSON.stringify(data),
+    });
+    return handleResponse(res);
+  },
+
+  async getTenantStayRequests(): Promise<StayRequest[]> {
+    const res = await fetch(`${API_BASE}/tenant/requests`, {
+      headers: getAuthHeader(),
     });
     return handleResponse(res);
   },

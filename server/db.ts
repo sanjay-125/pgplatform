@@ -139,6 +139,22 @@ export function initDb() {
       FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE
     );
 
+    CREATE TABLE IF NOT EXISTS stay_requests (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      property_id INTEGER NOT NULL,
+      tenant_id INTEGER NOT NULL,
+      request_type TEXT NOT NULL CHECK(request_type IN ('Bed Change', 'Room Change', 'Visitor', 'Move Out')),
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      target_date TEXT,
+      status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'in_progress', 'approved', 'rejected', 'completed')),
+      admin_remark TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT,
+      FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE,
+      FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE
+    );
+
     CREATE TABLE IF NOT EXISTS audit_logs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER,
@@ -156,6 +172,8 @@ export function initDb() {
     CREATE INDEX IF NOT EXISTS idx_payments_period ON payments(period);
     CREATE INDEX IF NOT EXISTS idx_expenses_property ON expenses(property_id);
     CREATE INDEX IF NOT EXISTS idx_complaints_property ON complaints(property_id);
+    CREATE INDEX IF NOT EXISTS idx_stay_requests_tenant ON stay_requests(tenant_id);
+    CREATE INDEX IF NOT EXISTS idx_stay_requests_property ON stay_requests(property_id);
   `);
 }
 
