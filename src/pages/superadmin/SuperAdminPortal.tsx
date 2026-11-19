@@ -25,7 +25,6 @@ export const SuperAdminPortal: React.FC = () => {
   const [showAddPropertyModal, setShowAddPropertyModal] = useState(false);
   const [propForm, setPropForm] = useState({
     name: '',
-    code: '',
     address: '',
     city: 'Vellore',
   });
@@ -53,8 +52,8 @@ export const SuperAdminPortal: React.FC = () => {
 
   const handleCreateProperty = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!propForm.name.trim() || !propForm.code.trim()) {
-      showToast('Name and unique code are required', 'error');
+    if (!propForm.name.trim()) {
+      showToast('Property name is required', 'error');
       return;
     }
 
@@ -62,13 +61,12 @@ export const SuperAdminPortal: React.FC = () => {
     try {
       await api.createProperty({
         name: propForm.name.trim(),
-        code: propForm.code.trim().toUpperCase(),
         address: propForm.address.trim(),
         city: propForm.city.trim(),
       });
       showToast(`Property ${propForm.name} created successfully!`);
       setShowAddPropertyModal(false);
-      setPropForm({ name: '', code: '', address: '', city: 'Vellore' });
+      setPropForm({ name: '', address: '', city: 'Vellore' });
       loadData();
     } catch (err: any) {
       showToast(err.message, 'error');
@@ -155,7 +153,6 @@ export const SuperAdminPortal: React.FC = () => {
             <thead>
               <tr className="border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                 <th className="pb-3 px-3">Property Name</th>
-                <th className="pb-3 px-3">Code</th>
                 <th className="pb-3 px-3">Assigned Owner</th>
                 <th className="pb-3 px-3">Location</th>
                 <th className="pb-3 px-3">Rooms</th>
@@ -169,9 +166,6 @@ export const SuperAdminPortal: React.FC = () => {
                   <td className="py-3.5 px-3">
                     <div className="font-bold text-slate-900">{p.name}</div>
                     <div className="text-xs text-slate-400">{p.address}</div>
-                  </td>
-                  <td className="py-3.5 px-3 font-mono font-bold text-xs text-purple-700">
-                    {p.code}
                   </td>
                   <td className="py-3.5 px-3">
                     <span className="font-semibold text-slate-800">{p.owner_name || 'Owner'}</span>
@@ -266,30 +260,15 @@ export const SuperAdminPortal: React.FC = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    Unique Code *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. PG-SILICON"
-                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 uppercase focus:ring-2 focus:ring-purple-500"
-                    value={propForm.code}
-                    onChange={(e) => setPropForm({ ...propForm, code: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">City</label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-purple-500"
-                    value={propForm.city}
-                    onChange={(e) => setPropForm({ ...propForm, city: e.target.value })}
-                  />
-                </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">City</label>
+                <input
+                  type="text"
+                  required
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-purple-500"
+                  value={propForm.city}
+                  onChange={(e) => setPropForm({ ...propForm, city: e.target.value })}
+                />
               </div>
 
               <div>

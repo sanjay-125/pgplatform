@@ -9,7 +9,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileMenu }) => {
-  const { user, properties, activeProperty, switchProperty, logout } = useAuth();
+  const { user, activeProperty, logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -44,7 +44,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileMenu }) => {
       case 'owner':
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200">
-            <Building2 className="w-3.5 h-3.5" /> PG Owner
+            <Building2 className="w-3.5 h-3.5" /> Admin
           </span>
         );
       case 'tenant':
@@ -60,42 +60,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileMenu }) => {
 
   return (
     <header className="sticky top-0 z-30 h-16 bg-white border-b border-slate-200 shadow-sm flex items-center justify-between px-4 sm:px-8">
-      {/* Left side: Brand or Property selector */}
-      <div className="flex items-center gap-3 sm:gap-4">
-        {/* Brand logo & name - constant across all portals on mobile and laptop view */}
-        <BrandLogo />
+      {/* Keep the tenant and Super Admin branding; omit the owner/admin brand and property selector. */}
+      {user?.role !== 'owner' && (
+        <div className="flex items-center gap-3 sm:gap-4">
+          <BrandLogo />
 
-        {/* Property Selector for Owners with 1+ properties */}
-        {user?.role === 'owner' && properties.length > 0 && (
-          <div className="relative group">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200/80 rounded-xl border border-slate-200 text-slate-800 font-semibold text-xs sm:text-sm cursor-pointer transition">
-              <Building2 className="w-4 h-4 text-brand-600 shrink-0" />
-              <select
-                aria-label="Select Property"
-                className="bg-transparent border-none outline-none font-bold text-slate-800 cursor-pointer pr-1"
-                value={activeProperty?.id || ''}
-                onChange={(e) => switchProperty(Number(e.target.value))}
-              >
-                {properties.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name} ({p.code})
-                  </option>
-                ))}
-              </select>
+          {user?.role === 'tenant' && activeProperty && (
+            <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-600 font-medium">
+              <Home className="w-3.5 h-3.5 text-slate-400" />
+              <span>{activeProperty.name}</span>
             </div>
-          </div>
-        )}
-
-        {user?.role === 'tenant' && activeProperty && (
-          <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-600 font-medium">
-            <Home className="w-3.5 h-3.5 text-slate-400" />
-            <span>{activeProperty.name}</span>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
       {/* Right side: User Profile, Role Badge, Logout */}
-      <div className="flex items-center gap-3 sm:gap-4">
+      <div className={`flex items-center gap-3 sm:gap-4 ${user?.role === 'owner' ? 'ml-auto' : ''}`}>
         {getRoleBadge(user?.role)}
 
         {/* User Profile Button with Dropdown (Envelops name card & name; direct email removed) */}

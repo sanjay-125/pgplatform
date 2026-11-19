@@ -31,13 +31,13 @@ export function seedData() {
 
   // 3. Create Properties
   const propStmt = db.prepare(`
-    INSERT INTO properties (name, code, address, city, owner_id, created_at)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO properties (name, address, city, owner_id, created_at)
+    VALUES (?, ?, ?, ?, ?)
   `);
-  const prop1Result = propStmt.run('StayDesk Main Street PG', 'PG-MAIN', 'Plot 42, 3rd Cross, Main Road, Gandhi Nagar', 'Vellore', ownerId, new Date().toISOString());
+  const prop1Result = propStmt.run('Demo Property', 'Plot 42, 3rd Cross, Main Road, Gandhi Nagar', 'Vellore', ownerId, new Date().toISOString());
   const prop1Id = Number(prop1Result.lastInsertRowid);
 
-  const prop2Result = propStmt.run('StayDesk Katpadi Residency', 'PG-KATPADI', 'Near VIT East Gate, Katpadi', 'Vellore', ownerId, new Date().toISOString());
+  const prop2Result = propStmt.run('StayDesk Katpadi Residency', 'Near VIT East Gate, Katpadi', 'Vellore', ownerId, new Date().toISOString());
   const prop2Id = Number(prop2Result.lastInsertRowid);
 
   // 4. Create Rooms & Beds for Property 1

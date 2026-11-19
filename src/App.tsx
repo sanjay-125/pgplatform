@@ -3,7 +3,7 @@ import { useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Sidebar, OwnerTab } from './components/Sidebar';
 import { MobileNav } from './components/MobileNav';
-import { Login } from './pages/Login';
+import { SignIn } from './pages/SignIn';
 import { Dashboard } from './pages/owner/Dashboard';
 import { RoomsView } from './pages/owner/RoomsView';
 import { TenantsView } from './pages/owner/TenantsView';
@@ -91,10 +91,10 @@ export const App: React.FC = () => {
   }
 
   if (!token || !user) {
-    return <Login />;
+    return <SignIn />;
   }
 
-  // Tenant Resident Portal View (Profile creation placeholder on login)
+  // Tenant Resident Portal View (Profile creation placeholder on sign-in)
   if (user.role === 'tenant') {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -152,8 +152,6 @@ export const App: React.FC = () => {
                 <Dashboard
                   property={activeProperty}
                   onNavigate={setCurrentTab}
-                  onOpenAddTenant={() => handleOpenAddTenant()}
-                  onOpenRecordPayment={handleOpenRecordPayment}
                   onOpenAddExpense={() => setShowExpenseModal(true)}
                 />
               )}

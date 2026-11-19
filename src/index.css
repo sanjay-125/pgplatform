@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+  html,
+  body {
+    overscroll-behavior-y: none;
+    overscroll-behavior-x: none;
+  }
+
   body {
     @apply bg-slate-50 text-slate-900 font-sans antialiased;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;

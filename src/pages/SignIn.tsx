@@ -26,22 +26,22 @@ import type { UserRole } from '../types';
 import { EMAIL_PATTERN, isValidEmail, isValidIndianPhone } from '../utils/validation';
 
 type PublicRole = 'admin' | 'tenant' | 'superadmin';
-type AuthMode = 'login' | 'signup';
+type AccountScreenMode = 'sign-in' | 'sign-up';
 
 const inputClass =
   'w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-sm font-semibold text-slate-800 placeholder:text-slate-400 transition focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-brand-500/10';
 const passwordPattern = '^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$';
 const passwordRule = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/;
-const developmentDemoAccounts: Record<UserRole, { email: string; password: string }> = {
+const demoAccounts: Record<UserRole, { email: string; password: string }> = {
   owner: { email: 'owner@staydesk.in', password: 'Owner@123' },
   tenant: { email: 'arun@staydesk.in', password: 'Tenant@123' },
   superadmin: { email: 'superadmin@staydesk.in', password: 'SuperAdmin@123' },
 };
 
-const routeFor = (role: PublicRole, mode: AuthMode) => {
-  if (role === 'superadmin') return mode === 'signup' ? '/superadminsignup' : '/superadminlogin';
-  if (role === 'admin') return mode === 'signup' ? '/adminsignup' : '/adminlogin';
-  return mode === 'signup' ? '/tenantsignup' : '/tenantlogin';
+const routeFor = (role: PublicRole, mode: AccountScreenMode) => {
+  if (role === 'superadmin') return mode === 'sign-up' ? '/superadminsignup' : '/super-admin/sign-in';
+  if (role === 'admin') return mode === 'sign-up' ? '/adminsignup' : '/admin/sign-in';
+  return mode === 'sign-up' ? '/tenantsignup' : '/tenant/sign-in';
 };
 
 const authRoleFor = (role: PublicRole): UserRole => role === 'admin' ? 'owner' : role;
@@ -51,28 +51,28 @@ const normalizePath = (pathname: string) => pathname.replace(/\/+$/, '').toLower
 const roleDetails: Record<PublicRole, {
   title: string;
   cardTitle: string;
-  loginTitle: string;
+  signInTitle: string;
   description: string;
   Icon: LucideIcon;
 }> = {
   admin: {
     title: 'Admin',
     cardTitle: 'Admin',
-    loginTitle: 'Login as Admin',
+    signInTitle: 'Sign in to your admin account',
     description: 'Manages assigned properties with owner-defined permission.',
     Icon: UserCog,
   },
   tenant: {
     title: 'Tenant',
     cardTitle: 'Tenant',
-    loginTitle: 'Login as Tenant',
+    signInTitle: 'Sign in to your tenant account',
     description: 'Manage your own profile and accommodation details.',
     Icon: UserRoundCheck,
   },
   superadmin: {
     title: 'Super Admin',
     cardTitle: 'Super Admin',
-    loginTitle: 'Login as Super Admin',
+    signInTitle: 'Sign in to your Super Admin account',
     description: 'Owns and oversees the entire accommodation business.',
     Icon: Building2,
   },
@@ -129,15 +129,15 @@ function RoleCard({
       </p>
       <div className="mt-3 grid gap-2">
         <a
-          href={routeFor(role, 'login')}
-          onClick={(event) => navigateLink(event, navigate, routeFor(role, 'login'))}
+          href={routeFor(role, 'sign-in')}
+          onClick={(event) => navigateLink(event, navigate, routeFor(role, 'sign-in'))}
           className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 py-3 text-sm font-bold text-white shadow-md shadow-brand-600/20 transition hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/30"
         >
-          Log in <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          Sign in <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </a>
         <a
-          href={routeFor(role, 'signup')}
-          onClick={(event) => navigateLink(event, navigate, routeFor(role, 'signup'))}
+          href={routeFor(role, 'sign-up')}
+          onClick={(event) => navigateLink(event, navigate, routeFor(role, 'sign-up'))}
           className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-brand-200 hover:bg-brand-50/60 hover:text-brand-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/20"
         >
           Create account
@@ -164,7 +164,7 @@ function LandingPage({ navigate }: { navigate: (path: string) => void }) {
         <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 id="choose-account-heading" className="text-lg font-extrabold tracking-tight sm:text-xl">Choose your account</h2>
-            <p className="mt-1 text-xs text-slate-500 sm:text-sm">Log in or create an account as a tenant, admin manager, or original PG owner.</p>
+            <p className="mt-1 text-xs text-slate-500 sm:text-sm">Sign in or create an account as a tenant, admin manager, or original PG owner.</p>
           </div>
           <span className="mt-2 inline-flex w-fit items-center gap-1.5 rounded-full bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-500 sm:mt-0">
             <BadgeCheck className="h-3.5 w-3.5 text-brand-600" aria-hidden="true" />
@@ -610,62 +610,68 @@ function BackToAccounts({ navigate }: { navigate: (path: string) => void }) {
   );
 }
 
-function LoginForm({
+function SignInForm({
   role,
   navigate,
 }: {
   role: PublicRole;
   navigate: (path: string) => void;
 }) {
-  const { login } = useAuth();
+  const { signIn } = useAuth();
   const { showToast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loadingAction, setLoadingAction] = useState<'sign-in' | 'demo' | null>(null);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const loading = loadingAction !== null;
   const authRole = authRoleFor(role);
   const detail = roleDetails[role];
   const Icon = detail.Icon;
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const enteredEmail = email.trim();
-    const isEmptyDevShortcut = import.meta.env.DEV && !enteredEmail && !password;
-    if (!isEmptyDevShortcut && (!enteredEmail || !password)) {
-      showToast('Please enter both email and password.', 'error');
-      return;
-    }
-    const credentials = isEmptyDevShortcut
-      ? developmentDemoAccounts[authRole]
-      : { email: enteredEmail, password };
-    setLoading(true);
+  const signInWithCredentials = async (
+    credentials: { email: string; password: string },
+    action: 'sign-in' | 'demo',
+  ) => {
+    setLoadingAction(action);
     try {
-      await login(credentials.email, credentials.password, authRole);
+      await signIn(credentials.email, credentials.password, authRole);
     } catch (error) {
       showToast(error instanceof Error ? error.message : 'Unable to sign in. Please try again.', 'error');
     } finally {
-      setLoading(false);
+      setLoadingAction(null);
     }
   };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const enteredEmail = email.trim();
+    if (!enteredEmail || !password) {
+      showToast('Please enter both email and password.', 'error');
+      return;
+    }
+    await signInWithCredentials({ email: enteredEmail, password }, 'sign-in');
+  };
+
+  const handleDemoSignIn = async () => signInWithCredentials(demoAccounts[authRole], 'demo');
 
   return (
     <AuthShell width="max-w-md" navigate={navigate}>
       <div className="mb-4"><BackToAccounts navigate={navigate} /></div>
-      <section aria-labelledby="login-heading" className="rounded-3xl bg-white p-4 text-slate-900 shadow-2xl shadow-slate-950/30 sm:p-5">
+      <section aria-labelledby="sign-in-heading" className="rounded-3xl bg-white p-4 text-slate-900 shadow-2xl shadow-slate-950/30 sm:p-5">
         <div className="mb-3 flex items-start gap-3">
           <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
             <Icon className="h-5 w-5" aria-hidden="true" />
           </div>
           <div className="min-w-0 pt-0.5">
             <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-brand-700">{detail.title} account</p>
-            <h1 id="login-heading" className="mt-1 text-xl font-extrabold tracking-tight sm:text-2xl">{detail.loginTitle}</h1>
+            <h1 id="sign-in-heading" className="mt-1 text-xl font-extrabold tracking-tight sm:text-2xl">{detail.signInTitle}</h1>
             <p className="mt-1 text-xs leading-relaxed text-slate-500">{detail.description}</p>
           </div>
         </div>
 
-        <form noValidate={import.meta.env.DEV} onSubmit={handleSubmit} className="space-y-2.5" aria-busy={loading}>
+        <form onSubmit={handleSubmit} className="space-y-2.5" aria-busy={loading}>
           <TextField
-            id="login-email"
+            id="sign-in-email"
             name="email"
             label="Email"
             type="email"
@@ -679,7 +685,7 @@ function LoginForm({
           <div>
             <PasswordField
               label="Password"
-              name="login-password"
+              name="sign-in-password"
               required
               value={password}
               onChange={(event) => setPassword(event.target.value)}
@@ -695,25 +701,37 @@ function LoginForm({
               </button>
             </div>
           </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-lg shadow-brand-600/25 transition hover:bg-brand-700 active:scale-[0.99] disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/30"
-          >
-            {loading ? (
-              <ButtonSpinner label="Signing in..." />
-            ) : import.meta.env.DEV && !email.trim() && !password ? (
-              'Enter demo portal'
-            ) : (
-              'Sign in'
-            )}
-            {!loading && <ArrowRight className="h-4 w-4" aria-hidden="true" />}
-          </button>
-          {import.meta.env.DEV && !email.trim() && !password && (
-            <p className="text-center text-[10px] leading-relaxed text-slate-400">
-              Development shortcut: open the demo {detail.title.toLowerCase()} account without credentials.
-            </p>
-          )}
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="inline-flex min-h-11 min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-xl bg-brand-600 px-2 py-2.5 text-[10px] font-extrabold text-white shadow-lg shadow-brand-600/25 transition hover:bg-brand-700 active:scale-[0.99] disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/30 sm:gap-2 sm:px-4 sm:text-sm"
+            >
+              {loadingAction === 'sign-in' ? (
+                <ButtonSpinner label="Signing in..." />
+              ) : (
+                <>
+                  Sign in
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={handleDemoSignIn}
+              disabled={loading}
+              className="inline-flex min-h-11 min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-brand-200 bg-brand-50 px-2 py-2.5 text-[10px] font-extrabold text-brand-800 transition hover:border-brand-300 hover:bg-brand-100 active:scale-[0.99] disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/30 sm:gap-2 sm:px-4 sm:text-sm"
+            >
+              {loadingAction === 'demo' ? (
+                <ButtonSpinner label="Opening demo..." />
+              ) : (
+                <>
+                  Open demo portal
+                  <Sparkles className="h-4 w-4 shrink-0" aria-hidden="true" />
+                </>
+              )}
+            </button>
+          </div>
         </form>
 
         <div className="mt-2 border-t border-slate-100 pt-2">
@@ -728,8 +746,8 @@ function LoginForm({
         <p className="mt-3 border-t border-slate-100 pt-3 text-center text-xs text-slate-500">
           New to StayDesk?{' '}
           <a
-            href={routeFor(role, 'signup')}
-            onClick={(event) => navigateLink(event, navigate, routeFor(role, 'signup'))}
+            href={routeFor(role, 'sign-up')}
+            onClick={(event) => navigateLink(event, navigate, routeFor(role, 'sign-up'))}
             className="font-extrabold text-brand-700 hover:text-brand-900 focus-visible:rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
           >
             Create a {detail.title} account
@@ -1298,11 +1316,11 @@ function SignupPage({
             <p className="mt-4 text-center text-xs text-slate-500">
               Already have an account?{' '}
               <a
-                href={routeFor(role, 'login')}
-                onClick={(event) => navigateLink(event, navigate, routeFor(role, 'login'))}
+                href={routeFor(role, 'sign-in')}
+                onClick={(event) => navigateLink(event, navigate, routeFor(role, 'sign-in'))}
                 className="font-extrabold text-brand-700 hover:text-brand-900 focus-visible:rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
               >
-                Log in
+                Sign in
               </a>
             </p>
           </div>
@@ -1314,7 +1332,7 @@ function SignupPage({
   );
 }
 
-export const Login: React.FC = () => {
+export const SignIn: React.FC = () => {
   const [pathname, setPathname] = useState(() => normalizePath(window.location.pathname));
 
   useEffect(() => {
@@ -1329,9 +1347,9 @@ export const Login: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (pathname === '/adminlogin' || pathname === '/ownerlogin') return <LoginForm role="admin" navigate={navigate} />;
-  if (pathname === '/tenantlogin') return <LoginForm role="tenant" navigate={navigate} />;
-  if (pathname === '/superadminlogin') return <LoginForm role="superadmin" navigate={navigate} />;
+  if (pathname === '/admin/sign-in') return <SignInForm role="admin" navigate={navigate} />;
+  if (pathname === '/tenant/sign-in') return <SignInForm role="tenant" navigate={navigate} />;
+  if (pathname === '/super-admin/sign-in') return <SignInForm role="superadmin" navigate={navigate} />;
   if (pathname === '/adminsignup') return <SignupPage role="admin" navigate={navigate} />;
   if (pathname === '/superadminsignup' || pathname === '/ownersignup') return <SignupPage role="superadmin" navigate={navigate} />;
   if (pathname === '/tenantsignup') return <SignupPage role="tenant" navigate={navigate} />;

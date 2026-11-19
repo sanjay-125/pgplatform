@@ -44,13 +44,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange, prope
   ];
 
   return (
-    <aside className="hidden md:flex flex-col w-64 bg-slate-900 text-slate-300 border-r border-slate-800 shrink-0 select-none">
+    <aside className="hidden md:sticky md:top-0 md:flex md:h-screen md:self-start md:overflow-y-auto flex-col w-64 bg-slate-900 text-slate-300 border-r border-slate-800 shrink-0 select-none">
       {/* Brand Header */}
       <div className="h-16 flex items-center gap-3 px-6 border-b border-slate-800">
         <BrandLogo
           iconClassName="w-9 h-9 rounded-xl object-contain shadow-xs shrink-0"
           textClassName="font-extrabold text-white tracking-tight text-base block"
-          subtitle="PG Management"
         />
       </div>
 
@@ -59,7 +58,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange, prope
         <div className="mx-4 mt-4 px-3 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700/60 flex items-center gap-2.5">
           <Building className="w-4 h-4 text-brand-400 shrink-0" />
           <div className="min-w-0">
-            <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Active PG</span>
+            <span className="text-[10px] font-bold text-slate-400 block tracking-wider">Assigned PG</span>
             <span className="text-xs font-bold text-white truncate block">{propertyName}</span>
           </div>
         </div>
@@ -89,12 +88,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange, prope
           );
         })}
       </nav>
-
-      {/* Footer Info */}
-      <div className="p-4 border-t border-slate-800 text-[11px] text-slate-500 leading-relaxed">
-        <span className="font-bold text-slate-400 block mb-0.5">StayDesk v2.0 Production</span>
-        Relational SQLite · JWT Authenticated · Web Ready
-      </div>
     </aside>
   );
 };

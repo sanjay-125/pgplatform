@@ -64,7 +64,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ propertyId, onClose,
       <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
           <div className="flex items-center gap-2">
-            <span className="p-1.5 bg-amber-100 text-amber-700 rounded-lg">
+            <span className="p-1.5 bg-brand-50 text-brand-700 rounded-lg">
               <Receipt className="w-5 h-5" />
             </span>
             <h3 className="font-bold text-slate-800">Add Operating Expense</h3>
@@ -144,7 +144,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({ propertyId, onClose,
             <button
               type="submit"
               disabled={loading}
-              className="px-5 py-2 text-sm font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-xl shadow-sm transition disabled:opacity-50"
+              className="px-5 py-2 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-sm transition disabled:opacity-50"
             >
               {loading ? <ButtonSpinner label="Saving Expense..." /> : 'Add Expense'}
             </button>

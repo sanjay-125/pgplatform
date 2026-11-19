@@ -385,7 +385,7 @@ export const TenantModal: React.FC<TenantModalProps> = ({
                   checked={form.createPortalAccount}
                   onChange={(e) => setForm({ ...form, createPortalAccount: e.target.checked })}
                 />
-                Create Tenant Portal login credentials (password defaults to <code>Tenant@123</code>)
+                Create Tenant Portal sign-in credentials (password defaults to <code>Tenant@123</code>)
               </label>
             </div>
           )}

@@ -13,7 +13,6 @@ export interface User {
 export interface Property {
   id: number;
   name: string;
-  code: string;
   address?: string;
   city?: string;
   owner_id?: number;

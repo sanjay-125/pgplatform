@@ -36,12 +36,13 @@ async function handleResponse<T>(res: Response): Promise<T> {
 
 export const api = {
   // Auth
-  async login(email: string, password: string): Promise<{ token: string; user: User }> {
-    const res = await fetch(`${API_BASE}/auth/login`, {
+  async signIn(email: string, password: string): Promise<{ token: string; user: User }> {
+    const requestOptions: RequestInit = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
-    });
+    };
+    const res = await fetch(`${API_BASE}/auth/sign-in`, requestOptions);
     return handleResponse(res);
   },
 
@@ -60,7 +61,7 @@ export const api = {
     return handleResponse(res);
   },
 
-  async createProperty(data: { name: string; code: string; address?: string; city?: string; ownerId?: number }): Promise<{ id: number }> {
+  async createProperty(data: { name: string; address?: string; city?: string; ownerId?: number }): Promise<{ id: number }> {
     const res = await fetch(`${API_BASE}/properties`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...getAuthHeader() },

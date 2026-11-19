@@ -14,36 +14,36 @@ main{min-width:0}.topbar{height:70px;background:#fff;border-bottom:1px solid var
 @media(max-width:720px){.app{grid-template-columns:1fr}.sidebar{padding:10px;gap:10px}.brand{padding:0 5px}.nav-label,.side-bottom{display:none}.nav{display:flex;overflow:auto;padding-bottom:2px}.nav button{white-space:nowrap;padding:9px;font-size:10px}.nav .ico{width:auto}.topbar{height:55px;padding:0 14px}.content{padding:19px 12px 30px}.heading{flex-direction:column}.heading h1{font-size:22px}.stats{gap:8px}.stat{padding:12px}.stat-value{font-size:20px}.stat-top{font-size:9px}.room-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.top-right .owner{display:none}.report-grid{grid-template-columns:1fr}.card{padding:13px}.table-wrap table{min-width:650px}.heading .actions{width:100%}.heading .actions .btn{flex:1}}
 @media print{.sidebar,.topbar,.heading .actions,.btn,.toolbar,.footer-note{display:none!important}.app{display:block}.content{padding:0}.page.hidden{display:none!important}body{background:#fff}.card,.stat{box-shadow:none}}
 
-.login-screen{min-height:100vh;background:linear-gradient(135deg,#edf2ff,#f7f8fc 55%,#e8f5f1);display:grid;place-items:center;padding:22px}
-.login-card{background:#fff;border:1px solid #e5eaf2;border-radius:20px;box-shadow:0 18px 60px rgba(24,39,75,.12);padding:30px;width:min(440px,100%)}
-.login-brand{display:flex;align-items:center;gap:11px}.login-brand strong{font-size:19px}.login-brand small{display:block;color:#738096;font-size:9px;letter-spacing:1px;margin-top:3px}
-.login-intro{margin:26px 0 20px}.login-intro h1{font-size:25px;margin:0 0 7px;letter-spacing:-.6px}.login-intro p{font-size:12px;color:#738096;line-height:1.5;margin:0}
-.login-field{display:grid;gap:6px;margin:13px 0}.login-field label{font-size:11px;font-weight:750;color:#46536a}.login-field input,.login-field select{width:100%;padding:12px;border:1px solid #e0e6f0;border-radius:9px;background:#fff;font-size:12px;color:#172033}.login-field small{font-size:10px;color:#738096;line-height:1.4}
-.login-submit{width:100%;padding:12px;margin-top:6px}.login-note{font-size:10px;line-height:1.6;color:#7a869a;margin:17px 0 0}.login-note strong{color:#a46512}
+.sign-in-screen{min-height:100vh;background:linear-gradient(135deg,#edf2ff,#f7f8fc 55%,#e8f5f1);display:grid;place-items:center;padding:22px}
+.sign-in-card{background:#fff;border:1px solid #e5eaf2;border-radius:20px;box-shadow:0 18px 60px rgba(24,39,75,.12);padding:30px;width:min(440px,100%)}
+.sign-in-brand{display:flex;align-items:center;gap:11px}.sign-in-brand strong{font-size:19px}.sign-in-brand small{display:block;color:#738096;font-size:9px;letter-spacing:1px;margin-top:3px}
+.sign-in-intro{margin:26px 0 20px}.sign-in-intro h1{font-size:25px;margin:0 0 7px;letter-spacing:-.6px}.sign-in-intro p{font-size:12px;color:#738096;line-height:1.5;margin:0}
+.sign-in-field{display:grid;gap:6px;margin:13px 0}.sign-in-field label{font-size:11px;font-weight:750;color:#46536a}.sign-in-field input,.sign-in-field select{width:100%;padding:12px;border:1px solid #e0e6f0;border-radius:9px;background:#fff;font-size:12px;color:#172033}.sign-in-field small{font-size:10px;color:#738096;line-height:1.4}
+.sign-in-submit{width:100%;padding:12px;margin-top:6px}.sign-in-note{font-size:10px;line-height:1.6;color:#7a869a;margin:17px 0 0}.sign-in-note strong{color:#a46512}
 .tenant-portal,.super-portal{min-height:100vh;background:var(--bg)}.tenant-top{height:70px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 max(18px,calc((100vw - 1100px)/2));gap:15px}.tenant-content{padding:28px 22px 45px;max-width:1120px;margin:auto}
-@media(max-width:600px){.login-card{padding:22px}.tenant-top{height:60px;padding:0 14px}.tenant-content{padding:20px 12px}}
+@media(max-width:600px){.sign-in-card{padding:22px}.tenant-top{height:60px;padding:0 14px}.tenant-content{padding:20px 12px}}
 
 </style>
 </head>
 <body>
 
-<div id="loginScreen" class="login-screen">
-  <div class="login-card">
-    <div class="login-brand"><div class="brand-icon">S</div><div><strong>StayDesk</strong><small>PG MANAGEMENT PLATFORM</small></div></div>
-    <div class="login-intro"><h1>Welcome back</h1><p>Sign in to manage your PG or view your stay details.</p></div>
-    <div class="login-field"><label for="loginRole">Login as</label>
-      <select id="loginRole">
+<div id="signInScreen" class="sign-in-screen">
+  <div class="sign-in-card">
+    <div class="sign-in-brand"><div class="brand-icon">S</div><div><strong>StayDesk</strong><small>PG MANAGEMENT PLATFORM</small></div></div>
+    <div class="sign-in-intro"><h1>Welcome back</h1><p>Sign in to manage your PG or view your stay details.</p></div>
+    <div class="sign-in-field"><label for="signInRole">Sign in as</label>
+      <select id="signInRole">
         <option value="tenant">User · Tenant</option>
         <option value="admin">Admin · PG Owner / Manager</option>
         <option value="superadmin">Super Admin · Platform</option>
       </select>
     </div>
-    <div class="login-field" id="tenantPickerWrap"><label for="loginTenant">Demo tenant account</label><select id="loginTenant"></select></div>
-    <div class="login-field" id="propertyPickerWrap"><label for="loginProperty">Property access</label><select id="loginProperty"><option value="all">All assigned PGs</option><option value="pg1">PG 1 · Main Street</option><option value="pg2">PG 2 · Katpadi</option></select><small>One admin account can manage multiple PG properties.</small></div>
-    <div class="login-field"><label for="loginEmail">Email / username</label><input id="loginEmail" autocomplete="username" placeholder="demo@staydesk.in" value="demo@staydesk.in"></div>
-    <div class="login-field"><label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Demo only — no real password required" value="demo123"></div>
-    <button class="btn primary login-submit" onclick="demoLogin()">Continue to StayDesk →</button>
-    <p class="login-note"><strong>Prototype login:</strong> role selection is for demonstrating navigation and permissions only. It does not authenticate a real account. Do not use real tenant data until secure server-side authentication and authorization are implemented.</p>
+    <div class="sign-in-field" id="tenantPickerWrap"><label for="signInTenant">Demo tenant account</label><select id="signInTenant"></select></div>
+    <div class="sign-in-field" id="propertyPickerWrap"><label for="signInProperty">Property access</label><select id="signInProperty"><option value="all">All assigned PGs</option><option value="pg1">PG 1 · Demo Property</option><option value="pg2">PG 2 · Katpadi</option></select><small>One admin account can manage multiple PG properties.</small></div>
+    <div class="sign-in-field"><label for="signInEmail">Email / username</label><input id="signInEmail" autocomplete="username" placeholder="demo@staydesk.in" value="demo@staydesk.in"></div>
+    <div class="sign-in-field"><label for="signInPassword">Password</label><input id="signInPassword" type="password" autocomplete="current-password" placeholder="Demo only — no real password required" value="demo123"></div>
+    <button class="btn primary sign-in-submit" onclick="demoSignIn()">Continue to StayDesk →</button>
+    <p class="sign-in-note"><strong>Prototype sign-in:</strong> role selection is for demonstrating navigation and permissions only. It does not authenticate a real account. Do not use real tenant data until secure server-side authentication and authorization are implemented.</p>
   </div>
 </div>
 <div id="tenantPortal" class="tenant-portal hidden">
@@ -128,7 +128,7 @@ main{min-width:0}.topbar{height:70px;background:#fff;border-bottom:1px solid var
   </section>
   <section id="roommatesPage" class="page hidden">
    <div class="heading"><div><h1>Roommate view</h1><p>Preview the information a tenant could see about other active people in their room.</p></div></div>
-   <div class="notice warn"><strong>Privacy:</strong> This is a local preview, not a secure tenant login. Only display a roommate's phone number when they have explicitly agreed to share it. Do not show ID details, emergency contacts, rent or payment history to roommates.</div>
+   <div class="notice warn"><strong>Privacy:</strong> This is a local preview, not a secure tenant sign-in. Only display a roommate's phone number when they have explicitly agreed to share it. Do not show ID details, emergency contacts, rent or payment history to roommates.</div>
    <div class="card roommate-card"><div class="field"><label for="roommateTenant">Preview as active tenant</label><select id="roommateTenant" onchange="renderRoommateView()"></select></div><div id="roommatePreview" style="margin-top:18px"></div></div>
    <p class="footer-note">For a real release, this page must be protected by verified tenant authentication and server-side authorization. A hidden page or local selection is not access control.</p>
   </section>
@@ -237,23 +237,23 @@ function renderRoommateView(){
 }
 
 let currentRole=null, currentTenantId=null, currentProperty='all';
-function setupLoginOptions(){
- const s=document.getElementById('loginTenant');
+function setupSignInOptions(){
+ const s=document.getElementById('signInTenant');
  s.innerHTML=activeTenants().map(t=>`<option value="${t.id}">${esc(t.name)} — Room ${esc(roomOf(t.roomId)?.number||'')}</option>`).join('');
- document.getElementById('loginRole').addEventListener('change',updateLoginFields);
- updateLoginFields();
+ document.getElementById('signInRole').addEventListener('change',updateSignInFields);
+ updateSignInFields();
 }
-function updateLoginFields(){
- const role=document.getElementById('loginRole').value;
+function updateSignInFields(){
+ const role=document.getElementById('signInRole').value;
  document.getElementById('tenantPickerWrap').classList.toggle('hidden',role!=='tenant');
  document.getElementById('propertyPickerWrap').classList.toggle('hidden',role!=='admin');
- document.getElementById('loginEmail').placeholder=role==='tenant'?'tenant@staydesk.in':role==='admin'?'owner@staydesk.in':'superadmin@staydesk.in';
+ document.getElementById('signInEmail').placeholder=role==='tenant'?'tenant@staydesk.in':role==='admin'?'owner@staydesk.in':'superadmin@staydesk.in';
 }
-function demoLogin(){
- currentRole=document.getElementById('loginRole').value;
- currentProperty=document.getElementById('loginProperty').value;
- currentTenantId=Number(document.getElementById('loginTenant').value)||null;
- document.getElementById('loginScreen').classList.add('hidden');
+function demoSignIn(){
+ currentRole=document.getElementById('signInRole').value;
+ currentProperty=document.getElementById('signInProperty').value;
+ currentTenantId=Number(document.getElementById('signInTenant').value)||null;
+ document.getElementById('signInScreen').classList.add('hidden');
  document.getElementById('ownerApp').classList.add('hidden');
  document.getElementById('tenantPortal').classList.add('hidden');
  document.getElementById('superAdminPortal').classList.add('hidden');
@@ -266,7 +266,7 @@ function demoLogin(){
   navigate('dashboard');
   document.getElementById('ownerPropertyWrap')?.classList.remove('hidden');
   const ownerLabel=document.querySelector('.topbar .owner');
-  if(ownerLabel)ownerLabel.innerHTML=`PG Owner / Admin<small>${currentProperty==='all'?'All assigned PGs':currentProperty==='pg1'?'PG 1 · Main Street':'PG 2 · Katpadi'} · Demo mode</small>`;
+  if(ownerLabel)ownerLabel.innerHTML=`PG Owner / Admin<small>${currentProperty==='all'?'All assigned PGs':currentProperty==='pg1'?'PG 1 · Demo Property':'PG 2 · Katpadi'} · Demo mode</small>`;
   renderAll();
  }
 }
@@ -275,7 +275,7 @@ function demoLogout(){
  document.getElementById('ownerApp').classList.add('hidden');
  document.getElementById('tenantPortal').classList.add('hidden');
  document.getElementById('superAdminPortal').classList.add('hidden');
- document.getElementById('loginScreen').classList.remove('hidden');
+ document.getElementById('signInScreen').classList.remove('hidden');
 }
 function renderTenantPortal(){
  const t=tenantOf(currentTenantId);
@@ -291,7 +291,7 @@ function renderTenantPortal(){
 }
 function renderSuperAdminPortal(){
  document.getElementById('superStats').innerHTML=[stat('Properties',2,'▤','Illustrative demo setup'),stat('PG admins',1,'♙','One owner can manage multiple PGs'),stat('Active tenants',activeTenants().length,'♧','Sample records only'),stat('Platform status','Demo','✓','No real user accounts connected')].join('');
- document.getElementById('superPropertyRows').innerHTML=`<tr><td><strong>PG 1 · Main Street</strong><span class="sub">Property ID: pg1</span></td><td>Demo owner</td><td>${activeTenants().length}</td><td>${badge('active')}</td><td><button class="btn small" onclick="toast('Property management requires secure backend support.')">Manage</button></td></tr><tr><td><strong>PG 2 · Katpadi</strong><span class="sub">Property ID: pg2</span></td><td>Demo owner</td><td>—</td><td>${badge('active')}</td><td><button class="btn small" onclick="toast('Property management requires secure backend support.')">Manage</button></td></tr>`;
+ document.getElementById('superPropertyRows').innerHTML=`<tr><td><strong>PG 1 · Demo Property</strong><span class="sub">Property ID: pg1</span></td><td>Demo owner</td><td>${activeTenants().length}</td><td>${badge('active')}</td><td><button class="btn small" onclick="toast('Property management requires secure backend support.')">Manage</button></td></tr><tr><td><strong>PG 2 · Katpadi</strong><span class="sub">Property ID: pg2</span></td><td>Demo owner</td><td>—</td><td>${badge('active')}</td><td><button class="btn small" onclick="toast('Property management requires secure backend support.')">Manage</button></td></tr>`;
 }
 
 function renderAll(){renderDashboard();renderRooms();renderTenants();renderRent();renderReminders();renderReports();renderRoommateView()}
@@ -349,7 +349,7 @@ function openModal(type,id=null,roomPreset=null){
 }
 function closeModal(){document.getElementById('modalRoot').innerHTML=''}
 document.getElementById('rentPeriod').value=monthNow();document.getElementById('reminderPeriod').value=monthNow();document.getElementById('reportPeriod').value=monthNow();
-setupLoginOptions();
+setupSignInOptions();
 renderAll();
 </script>
 </body></html>

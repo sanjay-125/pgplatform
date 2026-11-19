@@ -29,7 +29,6 @@ export function initDb() {
     CREATE TABLE IF NOT EXISTS properties (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
-      code TEXT UNIQUE NOT NULL,
       address TEXT,
       city TEXT,
       owner_id INTEGER NOT NULL,
@@ -175,6 +174,53 @@ export function initDb() {
     CREATE INDEX IF NOT EXISTS idx_stay_requests_tenant ON stay_requests(tenant_id);
     CREATE INDEX IF NOT EXISTS idx_stay_requests_property ON stay_requests(property_id);
   `);
+
+  migratePropertiesWithoutCode();
+}
+
+function migratePropertiesWithoutCode() {
+  const columns = db.prepare('PRAGMA table_info(properties)').all() as { name: string }[];
+  if (!columns.some((column) => column.name === 'code')) return;
+
+  db.exec('PRAGMA foreign_keys = OFF;');
+  try {
+    db.exec('BEGIN IMMEDIATE;');
+    db.exec(`
+      CREATE TABLE properties_replacement (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        address TEXT,
+        city TEXT,
+        owner_id INTEGER NOT NULL,
+        created_at TEXT NOT NULL,
+        FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+
+      INSERT INTO properties_replacement (id, name, address, city, owner_id, created_at)
+      SELECT
+        id,
+        CASE WHEN name = 'StayDesk Main Street PG' THEN 'Demo Property' ELSE name END,
+        address,
+        city,
+        owner_id,
+        created_at
+      FROM properties;
+
+      DROP TABLE properties;
+      ALTER TABLE properties_replacement RENAME TO properties;
+    `);
+    db.exec('COMMIT;');
+  } catch (error) {
+    db.exec('ROLLBACK;');
+    throw error;
+  } finally {
+    db.exec('PRAGMA foreign_keys = ON;');
+  }
+
+  const violations = db.prepare('PRAGMA foreign_key_check').all();
+  if (violations.length > 0) {
+    throw new Error('Property schema migration left foreign-key violations.');
+  }
 }
 
 export function logAudit(userId: number | null, action: string, details?: string, ip?: string) {

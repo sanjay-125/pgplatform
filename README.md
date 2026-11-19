@@ -13,7 +13,7 @@ StayDesk has been completely modernized from a static prototype to a production-
 │   ├── components/         # Reusable UI components & modals (ReceiptModal, RoomModal, TenantModal, etc.)
 │   ├── context/            # Global Auth & Multi-Property Context
 │   ├── pages/
-│   │   ├── Login.tsx       # Role-based account selection, login, and signup screens
+│   │   ├── SignIn.tsx      # Role-based account selection, sign-in, and signup screens
 │   │   ├── owner/          # Owner Management Suite (Dashboard, Rooms, Tenants, Rent, Reminders, Expenses, Complaints, Notices, Backup)
 │   │   ├── tenant/         # Resident Tenant Portal (My Stay, Rent status, Roommate directory with privacy consent, Receipts, Maintenance)
 │   │   └── superadmin/     # Super Admin Platform Console (Properties, Admins, Ecosystem metrics, Security audit logs)
@@ -37,7 +37,7 @@ StayDesk has been completely modernized from a static prototype to a production-
    - **Resident Tenant**: Personal stay summary, monthly rent status, simulated UPI QR code payment, privacy-protected roommate view (phone number strictly hidden unless sharing consent is recorded), payment ledger with receipt reprint, maintenance ticket submission, PG notices.
 
 2. **Multi-Property Isolation**:
-   - Single admin account can manage multiple PG branches (e.g. *Main Street PG* and *Katpadi Residency*).
+   - Single admin account can manage multiple PG branches (e.g. *Demo Property* and *Katpadi Residency*).
    - Every database query strictly validates the owner's assigned properties.
 
 3. **Room & Bed Integrity**:
@@ -54,11 +54,11 @@ StayDesk has been completely modernized from a static prototype to a production-
 
 | Role | Email | Password | Scope |
 |---|---|---|---|
-| **Owner** | `owner@staydesk.in` | `Owner@123` | Multi-PG Management (*Main Street* & *Katpadi*) |
-| **Resident Tenant** | `arun@staydesk.in` | `Tenant@123` | Room 101, Bed A (*Main Street PG*) |
+| **Owner** | `owner@staydesk.in` | `Owner@123` | Multi-PG Management (*Demo Property* & *Katpadi*) |
+| **Resident Tenant** | `arun@staydesk.in` | `Tenant@123` | Room 101, Bed A (*Demo Property*) |
 | **Super Admin** | `superadmin@staydesk.in` | `SuperAdmin@123` | Platform Overview & Property Creation |
 
-The public account screens use `/ownerlogin`, `/tenantlogin`, `/superadminlogin`, `/ownersignup`, and `/tenantsignup`. Signup forms currently validate in the browser only; they do not create accounts or send approval requests.
+The public account screens use `/admin/sign-in`, `/tenant/sign-in`, `/super-admin/sign-in`, `/ownersignup`, and `/tenantsignup`. Signup forms currently validate in the browser only; they do not create accounts or send approval requests.
 
 ---
 

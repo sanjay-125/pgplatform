@@ -13,7 +13,7 @@
 - [x] Export and verify JSON backup.
 
 ## Production readiness (Implemented & Verified)
-- [x] Add secure owner login and role-based authorization (JWT + bcrypt).
+- [x] Add secure owner sign-in and role-based authorization (JWT + bcrypt).
 - [x] Add tenant authentication for roommate view; enforce access checks server-side.
 - [x] Replace localStorage with secured relational database (`node:sqlite`) and tested backup/restore.
 - [x] Multi-property data isolation: `property_id` enforced on every room, tenant, payment, and expense.

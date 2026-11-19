@@ -34,7 +34,7 @@ app.get('/api/health', (req: Request, res: Response) => {
 // -------------------------------------------------------------
 // Authentication Endpoints
 // -------------------------------------------------------------
-app.post('/api/auth/login', (req: Request, res: Response) => {
+const handleSignIn = (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) {
     res.status(400).json({ error: 'Email and password are required' });
@@ -71,7 +71,7 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
     propertyIds,
   });
 
-  logAudit(user.id, 'USER_LOGIN', `Role: ${user.role}`, req.ip);
+  logAudit(user.id, 'USER_SIGN_IN', `Role: ${user.role}`, req.ip);
 
   res.json({
     token,
@@ -85,7 +85,9 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
       propertyIds,
     },
   });
-});
+};
+
+app.post('/api/auth/sign-in', handleSignIn);
 
 app.get('/api/auth/me', authenticateToken, (req: AuthRequest, res: Response) => {
   const user = db.prepare('SELECT id, name, email, role, phone FROM users WHERE id = ?').get(req.user!.id) as any;
@@ -156,9 +158,9 @@ app.get('/api/properties', authenticateToken, (req: AuthRequest, res: Response) 
 });
 
 app.post('/api/properties', authenticateToken, requireRole('superadmin', 'owner'), (req: AuthRequest, res: Response) => {
-  const { name, code, address, city, ownerId } = req.body;
-  if (!name || !code) {
-    res.status(400).json({ error: 'Property name and unique code are required' });
+  const { name, address, city, ownerId } = req.body;
+  if (!name) {
+    res.status(400).json({ error: 'Property name is required' });
     return;
   }
 
@@ -166,14 +168,14 @@ app.post('/api/properties', authenticateToken, requireRole('superadmin', 'owner'
 
   try {
     const stmt = db.prepare(`
-      INSERT INTO properties (name, code, address, city, owner_id, created_at)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO properties (name, address, city, owner_id, created_at)
+      VALUES (?, ?, ?, ?, ?)
     `);
-    const result = stmt.run(name.trim(), code.trim().toUpperCase(), address || '', city || '', assignedOwnerId, new Date().toISOString());
-    logAudit(req.user!.id, 'CREATE_PROPERTY', `Property: ${name} (${code})`, req.ip);
+    const result = stmt.run(name.trim(), address || '', city || '', assignedOwnerId, new Date().toISOString());
+    logAudit(req.user!.id, 'CREATE_PROPERTY', `Property: ${name}`, req.ip);
     res.status(201).json({ id: Number(result.lastInsertRowid), message: 'Property created successfully' });
   } catch (err: any) {
-    res.status(400).json({ error: err.message.includes('UNIQUE') ? 'Property code already exists' : err.message });
+    res.status(400).json({ error: err.message });
   }
 });
 
